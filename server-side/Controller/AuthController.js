@@ -4,14 +4,13 @@ import { generateToken } from "../Utils/generateToken.js";
 
 export const registerUser = async (req, res) => {
     try {
-        const { name, username, email, password, phone } = req.body;
+        const { name, username, email, phone, password } = req.body;
 
         if (!name || !email || !password || !phone) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
-        const query = { email, name, phone };
-        const existingUser = await UserModel.findOne(query);
+        const existingUser = await UserModel.findOne({ email });
 
         if (existingUser) {
             return res.status(400).json({ message: "User already exists" });
@@ -22,11 +21,11 @@ export const registerUser = async (req, res) => {
 
         // Create the user with hashed password
         const user = await UserModel.create({
-            username,
             name,
+            username,
             email,
-            password: hashedPassword,
             phone,
+            password: hashedPassword,
             profilePic: req.file ? req.file.path : "",
         });
 
@@ -34,18 +33,22 @@ export const registerUser = async (req, res) => {
         const token = generateToken(user._id);
 
         res.status(201).json({
-            _id: user._id,
-            name: user.name,
-            username: user.username,
-            email: user.email,
-            phone: user.phone,
-            profilePic: user.profilePic,
-            token,  // Include the token in the response
+            message: "User created successfully",
+            user: {
+                _id: user._id,
+                name: user.name,
+                username: user.username,
+                email: user.email,
+                phone: user.phone,
+                profilePic: user.profilePic,
+            },
+            token,  // Include token in response
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 
 export const loginUser = async (req, res) => {
@@ -56,6 +59,7 @@ export const loginUser = async (req, res) => {
         }
 
         const user = await UserModel.findOne({ email });
+        console.log(user);
         if (!user) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
@@ -69,14 +73,19 @@ export const loginUser = async (req, res) => {
         const token = generateToken(user._id);
 
         res.status(200).json({
-            _id: user._id,
-            name: user.name,
-            username: user.username,
-            email: user.email,
-            phone: user.phone,
-            profilePic: user.profilePic,
+            message: "Login successful",
+            user: {
+                _id: user._id,
+                name: user.name,
+                username: user.username,
+                email: user.email,
+                phone: user.phone,
+                profilePic: user.profilePic,
+            },
             token,  // Include the token in the response
         });
+
+
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
