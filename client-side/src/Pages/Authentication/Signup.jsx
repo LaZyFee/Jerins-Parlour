@@ -16,7 +16,7 @@ function Signup() {
   const [signUpError, setSignUPError] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { signup, isLoading, error } = useAuth();
+  const { signup, isLoading } = useAuth();
 
   const handleSignUp = async (data) => {
     const { name, username, email, phone, password } = data;

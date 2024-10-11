@@ -1,43 +1,24 @@
-import { Fragment } from "react";
 import { Link, NavLink } from "react-router-dom";
+import NavLogo from "../../../src/assets/logo.png";
 
 function Navbar() {
-  const menuItems = (
-    <Fragment>
-      <NavLink
-        to="/"
-        className={({ isActive }) =>
-          isActive ? "border-b-4 border-b-red-500 p-2 font-extrabold" : ""
-        }
-      >
-        Home
-      </NavLink>
-      <NavLink
-        to="/"
-        className={({ isActive }) =>
-          isActive ? "border-b-4 border-b-red-500 p-2 font-extrabold" : ""
-        }
-      >
-        Our Portfolio
-      </NavLink>
-      <NavLink
-        to="/"
-        className={({ isActive }) =>
-          isActive ? "border-b-4 border-b-red-500 p-2 font-extrabold" : ""
-        }
-      >
-        Our Team
-      </NavLink>
-      <NavLink
-        to="/"
-        className={({ isActive }) =>
-          isActive ? "border-b-4 border-b-red-500 p-2 font-extrabold" : ""
-        }
-      >
-        Contact Us
-      </NavLink>
-    </Fragment>
-  );
+  const menuItems = [
+    { name: "Home", path: "/" },
+    { name: "Our Portfolio", path: "/portfolio" },
+    { name: "Our Team", path: "/team" },
+    { name: "Contact Us", path: "/contact" },
+  ].map((item) => (
+    <NavLink
+      key={item.name}
+      to={item.path}
+      className={({ isActive }) =>
+        isActive ? "border-b-4 border-b-red-500 font-extrabold" : ""
+      }
+    >
+      {item.name}
+    </NavLink>
+  ));
+
   return (
     <div className="navbar p-5 shadow-2xl">
       <div className="navbar-start">
@@ -66,11 +47,7 @@ function Navbar() {
           </ul>
         </div>
         <Link to="/" className="btn btn-ghost text-xl normal-case">
-          <img
-            src="../../../src/assets/logo.png"
-            alt="logo"
-            className="w-36 h-12"
-          />
+          <img src={NavLogo} alt="logo" className="w-36 h-12" />
         </Link>
       </div>
 

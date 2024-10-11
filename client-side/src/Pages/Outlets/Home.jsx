@@ -4,17 +4,14 @@ import testimonials from "../../fakeDB/TestomonialData";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
+import HeroImage1 from "../../assets/images/hero1.png";
 
 function Home() {
   return (
     <div>
       {/* Hero Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 p-12 shadow-xl lg:flex lg:flex-row-reverse ">
-        <img
-          src="public/assets/images/beautiful-young-asian-woman-touching-her-clean-face-with-fresh-healthy-skin-isolated-white-wall-beauty-cosmetics-facial-treatment-concept 1.png"
-          className="w-full max-h-screen"
-          alt="Hero"
-        />
+        <img src={HeroImage1} className="w-full max-h-screen" alt="Hero" />
         <div className="w-full flex flex-col justify-center items-start p-6">
           <h1 className="text-5xl font-bold">
             Beauty Salon <br />
