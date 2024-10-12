@@ -38,7 +38,11 @@ function Home() {
               key={service.id}
               className="border p-6 rounded-lg text-center transition-transform duration-300 ease-in-out transform hover:shadow-2xl hover:scale-105"
             >
-              <div className="text-5xl mb-4">{service.icon}</div>
+              <img
+                src={service.icon}
+                alt={service.title}
+                className="w-16 h-16 mx-auto mb-4"
+              />
               <h2 className="text-lg font-bold">{service.title}</h2>
               <p className="text-xl text-pink-600">{service.price}</p>
               <p className="text-gray-600">{service.description}</p>

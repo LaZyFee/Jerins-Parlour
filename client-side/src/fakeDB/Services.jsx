@@ -1,3 +1,7 @@
+import ServiceIcon1 from "../assets/icons/Group 1373.png";
+import ServiceIcon2 from "../assets/icons/Group 1372.png";
+import ServiceIcon3 from "../assets/icons/Group 1374.png";
+
 const services = [
   {
     id: 1,
@@ -5,7 +9,7 @@ const services = [
     price: "$199",
     description:
       "We craft stunning and amazing web UI, using a well drafted UX to fit your product.",
-    icon: "👩‍⚕️", // You can replace this with the appropriate icon or image URL
+    icon: ServiceIcon1,
   },
   {
     id: 2,
@@ -13,7 +17,7 @@ const services = [
     price: "$99",
     description:
       "Amazing flyers, social media posts, and brand representations that would make your brand stand out.",
-    icon: "💇‍♀️", // You can replace this with the appropriate icon or image URL
+    icon: ServiceIcon2,
   },
   {
     id: 3,
@@ -21,7 +25,7 @@ const services = [
     price: "$299",
     description:
       "With well-written codes, we build amazing apps for all platforms, mobile and web apps in general.",
-    icon: "💆‍♀️", // You can replace this with the appropriate icon or image URL
+    icon: ServiceIcon3,
   },
 ];
 
