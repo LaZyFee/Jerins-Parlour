@@ -6,7 +6,8 @@ import { BsFillCreditCard2FrontFill, BsPaypal } from "react-icons/bs";
 
 function Booking() {
   const location = useLocation();
-  const service = location.state?.service;
+  const { service } = location.state || {};
+
   const {
     register,
     handleSubmit,
@@ -109,7 +110,7 @@ function Booking() {
             readOnly
             placeholder="Service"
             className="input input-bordered w-full my-2 bg-white text-black"
-            value={service || "No service selected"} // Dynamically set service
+            value={service?.title || "No service selected"} // Access service title
           />
         </div>
 
@@ -153,7 +154,7 @@ function Booking() {
         <div className="flex space-x-2 mt-4 justify-between items-center">
           <p>
             Your service charge will be{" "}
-            <span className="font-bold"> $0.00</span>
+            <span className="font-bold"> {service?.price}</span>
           </p>
 
           <button
