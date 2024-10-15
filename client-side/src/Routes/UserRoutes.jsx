@@ -11,6 +11,11 @@ import CustomerLayout from "../Layouts/CustomerLayout";
 import Booking from "../Pages/Customer/Booking";
 import BookingList from "../Pages/Customer/BookingList";
 import CustomerReviews from "../Pages/Customer/CustomerReviews";
+import OrderList from "../Pages/Admin/OrderList";
+import AddService from "../Pages/Admin/AddService";
+import MakeAdmin from "../Pages/Admin/MakeAdmin";
+import ManageService from "../Pages/Admin/ManageService";
+import AdminLayouts from "../Layouts/AdminLayouts";
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +41,28 @@ export const router = createBrowserRouter([
           {
             path: "review",
             element: <CustomerReviews />,
+          },
+        ],
+      },
+      {
+        path: "/admin",
+        element: <AdminLayouts />,
+        children: [
+          {
+            path: "",
+            element: <OrderList />,
+          },
+          {
+            path: "add-service",
+            element: <AddService />,
+          },
+          {
+            path: "make-admin",
+            element: <MakeAdmin />,
+          },
+          {
+            path: "manage-services",
+            element: <ManageService />,
           },
         ],
       },

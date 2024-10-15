@@ -81,6 +81,9 @@ function Navbar() {
               <a>Settings</a>
             </li>
             <li>
+              <Link to={"/booking/booking-list"}>My Booking</Link>
+            </li>
+            <li>
               <a>Logout</a>
             </li>
           </ul>
