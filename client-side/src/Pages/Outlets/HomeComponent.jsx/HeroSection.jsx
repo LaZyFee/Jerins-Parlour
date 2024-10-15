@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import HeroImage1 from "../../../assets/images/hero1.png";
 import PrimaryButton from "../../../Components/PrimaryButton";
 
@@ -15,7 +16,10 @@ function HeroSection() {
           adipiscing elit. Purus commodo ipsum duis <br />
           laoreet maecenas. Feugiat
         </p>
-        <PrimaryButton>Get an Appointment</PrimaryButton>
+        <Link to="/services">
+          {" "}
+          <PrimaryButton>Get an Appointment</PrimaryButton>{" "}
+        </Link>
       </div>
     </div>
   );

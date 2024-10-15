@@ -8,7 +8,7 @@ function AddService() {
     register,
     handleSubmit,
     setValue,
-    reset, // Add reset to clear the form
+    reset,
     formState: { errors },
   } = useForm();
 

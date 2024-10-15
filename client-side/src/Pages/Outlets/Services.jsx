@@ -1,19 +1,13 @@
 import { Link } from "react-router-dom";
-import PrimaryButton from "../../../Components/PrimaryButton";
-import services from "../../../fakeDB/Services";
+import services from "../../fakeDB/Services.jsx";
 
-function ServiceSection() {
-  // Display only 3 services
-  const limitedServices = services.slice(0, 3);
-
+function Services() {
   return (
-    <div className="py-5 bg-white">
-      <h1 className="text-3xl my-5 font-bold text-center">
-        Our Awesome <span className="text-[#F63E7B]">Services</span>
-      </h1>
+    <div className="min-h-screen py-5 bg-white">
+      <h1 className="text-3xl font-bold text-center">All Services</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto lg:p-12">
-        {limitedServices.map((service) => (
+        {services.map((service) => (
           <div
             key={service.id}
             className="border p-6 rounded-lg text-center transition-transform duration-300 ease-in-out transform hover:shadow-2xl hover:scale-105"
@@ -29,7 +23,7 @@ function ServiceSection() {
                 </h2>
                 <p>{service.description}</p>
                 <div className="card-actions justify-between items-center my-2">
-                  <div className="  text-xl font-bold">{service.price}</div>
+                  <div className="text-xl font-bold">{service.price}</div>
                   <Link
                     to="/booking"
                     state={{ service }} // Use state directly as a prop
@@ -43,14 +37,8 @@ function ServiceSection() {
           </div>
         ))}
       </div>
-
-      <div className="grid place-items-center my-4">
-        <Link to="/services">
-          <PrimaryButton>Explore More</PrimaryButton>
-        </Link>
-      </div>
     </div>
   );
 }
 
-export default ServiceSection;
+export default Services;

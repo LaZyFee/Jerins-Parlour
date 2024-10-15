@@ -41,10 +41,11 @@ function AdminLayouts() {
               <NavLink
                 to={item.path}
                 className={({ isActive }) => (isActive ? "text-[#F63E7B]" : "")}
+                end={item.path === "."} // Ensure exact matching for the root route
               >
                 <span className="inline-flex items-center">
                   {item.icon}
-                  <span className="ml-2">{item.name}</span>{" "}
+                  <span className="ml-2">{item.name}</span>
                 </span>
               </NavLink>
             </li>
