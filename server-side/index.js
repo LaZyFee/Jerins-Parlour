@@ -3,6 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB } from "./DB/connectDB.js";
 import authRoutes from "./Routes/authRoutes.js";
+import serviceRoutes from "./Routes/serviceRoutes.js";
+import bookingRoutes from "./Routes/bookingRoutes.js";
 
 const app = express();
 app.use(cors(
@@ -25,6 +27,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/", authRoutes);
+app.use("/", serviceRoutes);
+app.use("/", bookingRoutes);
 
 app.listen(PORT, () => {
     connectDB();
