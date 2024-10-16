@@ -1,13 +1,27 @@
 import express from "express";
-import { addBooking, getAllBookings, getBookingById, deleteBooking } from "../Controller/BookingController.js";
+import {
+    addBooking,
+    getAllBookingsForAdmin, // Admin gets all bookings
+    updateBookingStatus,    // Admin updates booking status
+    getUserBookings,        // User gets their bookings
+    deleteBooking
+} from "../Controller/BookingController.js";
 
 const router = express.Router();
 
-
+// Add new booking (user or visitor)
 router.post("/addBooking", addBooking);
-router.get("/getAllBookings", getAllBookings);
-router.get("/getBookingById/:id", getBookingById);
+
+// Admin: get all bookings
+router.get("/admin/bookings", getAllBookingsForAdmin);
+
+// Admin: update booking status (Confirm/Reject)
+router.put("/admin/bookings/:id", updateBookingStatus);
+
+// Get bookings for a specific user or visitor by email
+router.get("/user/bookings", getUserBookings);
+
+// Delete booking
 router.delete("/deleteBooking/:id", deleteBooking);
 
-
-export default router
+export default router;

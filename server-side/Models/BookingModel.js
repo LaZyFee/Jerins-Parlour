@@ -21,6 +21,12 @@ const bookingSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    userId: mongoose.Schema.Types.ObjectId,
+    status: {
+        type: String,
+        enum: ["Pending", "Confirmed", "Rejected"],
+        default: "Pending"
+    }
 });
 
 export const BookingModel = mongoose.model("Booking", bookingSchema);
