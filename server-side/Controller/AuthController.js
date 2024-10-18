@@ -19,6 +19,8 @@ export const registerUser = async (req, res) => {
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Upload profile picture
+        const profilePicPath = req.file ? req.file.path.replace(/\\/g, "/") : "";
         // Create the user with hashed password
         const user = await UserModel.create({
             name,
@@ -26,7 +28,7 @@ export const registerUser = async (req, res) => {
             email,
             phone,
             password: hashedPassword,
-            profilePic: req.file ? req.file.path : "",
+            profilePic: profilePicPath,
         });
 
         // Generate JWT token
