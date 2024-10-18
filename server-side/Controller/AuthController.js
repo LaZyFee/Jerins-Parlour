@@ -90,3 +90,43 @@ export const loginUser = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 }
+export const logoutUser = async (req, res) => {
+    try {
+        res.json({ message: "Logout successful" });
+    } catch (error) {
+        console.error("Error logging out:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+export const checkAdmin = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const user = await UserModel.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.json({ isAdmin: user.isAdmin });
+    } catch (error) {
+        console.error("Error checking admin status:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+export const makeAdmin = async (req, res) => {
+    try {
+        const userEmail = req.user.email;
+        const user = await UserModel.findOne({ email: userEmail });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.isAdmin = true;
+        await user.save();
+        res.json({ message: "User promoted to admin" });
+    } catch (error) {
+        console.error("Error promoting user to admin:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
