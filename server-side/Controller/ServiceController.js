@@ -1,4 +1,5 @@
 import { ServiceModel } from "../Models/ServiceModel.js";
+import fs from 'fs'; // Import the fs module
 
 // Add service with image
 export const addService = async (req, res) => {
@@ -25,24 +26,49 @@ export const addService = async (req, res) => {
 };
 
 // Update service with image
+
 export const updateService = async (req, res) => {
     try {
-        const { name, price, description } = req.body;
-        if (!name || !price || !description) {
-            return res.status(400).json({ message: "All fields are required" });
+        // Find the existing service
+        const existingService = await ServiceModel.findById(req.params.id);
+        if (!existingService) {
+            return res.status(404).json({ message: "Service not found" });
+        }
+
+        // Create an object to hold the update fields
+        const updateFields = {};
+
+        // Check if each field is provided and add it to the updateFields object
+        if (req.body.name) {
+            updateFields.name = req.body.name;
+        }
+        if (req.body.price) {
+            updateFields.price = req.body.price;
+        }
+        if (req.body.description) {
+            updateFields.description = req.body.description;
         }
 
         // Store image path if a new image is uploaded
-        const imagePath = req.file ? req.file.path.replace(/\\/g, "/") : null;
+        if (req.file) {
+            // Delete the old image file if it exists
+            const oldImagePath = existingService.image;
+            if (oldImagePath) {
+                fs.unlink(oldImagePath, (err) => {
+                    if (err) {
+                        console.error("Failed to delete old image:", err);
+                    }
+                });
+            }
 
+            // Add the new image path to the update fields
+            updateFields.image = req.file.path.replace(/\\/g, "/");
+        }
+
+        // Update the service with the provided fields
         const updatedService = await ServiceModel.findByIdAndUpdate(
             req.params.id,
-            {
-                name,
-                price,
-                description,
-                ...(imagePath && { image: imagePath }) // Only update image if a new one is uploaded
-            },
+            updateFields,
             { new: true }
         );
 
@@ -51,6 +77,8 @@ export const updateService = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+
 
 
 export const getAllServices = async (req, res) => {
