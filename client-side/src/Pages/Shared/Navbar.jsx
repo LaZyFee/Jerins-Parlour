@@ -1,23 +1,42 @@
 import { Link, NavLink } from "react-router-dom";
 import NavLogo from "../../../src/assets/logo.png";
+import { useAuth } from "../../Store/AuthStore";
+import noImageFound from "../../assets/images/user.jpg";
+import { toast } from "react-hot-toast";
 
 function Navbar() {
+  const { user, logout, isAdmin } = useAuth();
+  console.log("user:", user, "isAdmin:", isAdmin);
+
   const menuItems = [
     { name: "Home", path: "/" },
     { name: "Our Portfolio", path: "/portfolio" },
     { name: "Our Team", path: "/team" },
     { name: "Contact Us", path: "/contact" },
+    { name: "My Bookings", path: "/booking/booking-list" },
+    ...(isAdmin ? [{ name: "Dashboard", path: "/admin/dashboard" }] : []),
   ].map((item) => (
     <NavLink
       key={item.name}
       to={item.path}
       className={({ isActive }) =>
-        isActive ? "border-b-4 border-b-red-500 font-extrabold" : ""
+        isActive
+          ? "border-b-4 border-b-red-500 font-extrabold"
+          : "hover:border-b-4 hover:border-b-gray-500 transition duration-300"
       }
     >
       {item.name}
     </NavLink>
   ));
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.success("Logout successfully");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
 
   return (
     <div className="navbar p-5 shadow-2xl">
@@ -47,47 +66,51 @@ function Navbar() {
           </ul>
         </div>
         <Link to="/" className="btn btn-ghost text-xl normal-case">
-          <img src={NavLogo} alt="logo" className="w-36 h-12" />
+          <img src={NavLogo} alt="logo" className="w-24 h-8 lg:w-36 lg:h-12" />
         </Link>
       </div>
 
       {/* Navbar Center */}
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal p-0 gap-4">{menuItems}</ul>
-        <ul></ul>
       </div>
       <div className="navbar-end">
-        <div className="dropdown dropdown-end">
-          <div
-            tabIndex={0}
-            role="button"
-            className="btn btn-ghost btn-circle avatar"
-          >
-            <div className="w-10 rounded-full">
-              <img
-                alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-              />
+        {user ? (
+          <div className="dropdown dropdown-end">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-circle avatar"
+            >
+              <div className="w-10 rounded-full">
+                <img
+                  alt="Profile"
+                  src={
+                    user.profilePic
+                      ? `${import.meta.env.VITE_BACKEND_URL}/${user.profilePic}`
+                      : noImageFound
+                  }
+                  className="w-10 rounded-full"
+                />
+              </div>
             </div>
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+            >
+              <li>
+                <a className="justify-between">Profile</a>
+              </li>
+              <li>
+                <a onClick={handleLogout}>Logout</a>
+              </li>
+            </ul>
           </div>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
-          >
-            <li>
-              <a className="justify-between">Profile</a>
-            </li>
-            <li>
-              <a>Settings</a>
-            </li>
-            <li>
-              <Link to={"/booking/booking-list"}>My Booking</Link>
-            </li>
-            <li>
-              <a>Logout</a>
-            </li>
-          </ul>
-        </div>
+        ) : (
+          <Link to="/login" className="btn">
+            Login
+          </Link>
+        )}
       </div>
     </div>
   );

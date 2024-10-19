@@ -1,39 +1,43 @@
 import { create } from "zustand";
 import axios from "axios";
-
-const API_URL = "http://localhost:5000";
+import CheckAdmin from "../Store/CheckAdmin";
 
 axios.defaults.withCredentials = true;
 
 export const useAuth = create((set) => ({
-  user: null,
-  isAuthenticated: false,
+  user: JSON.parse(localStorage.getItem("user")) || null,
+  isAuthenticated: !!localStorage.getItem("user"),
   error: null,
   isLoading: false,
-  isCheckingAuth: true,
-  message: null,
+  isAdmin: false,
+  isAdminLoading: true,
+
+  // Method to set admin status
+  setIsAdmin: (isAdmin) => set({ isAdmin }),
 
   // Signup function
-  signup: async (name, username, email, phone, password) => {
+  signup: async (email, password, name) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(`${API_URL}/register`, {
-        name,
-        username,
-        email,
-        phone,
-        password,
-      });
-      const { user, token } = response.data; // Destructure token from response
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/signup`,
+        {
+          email,
+          password,
+          name,
+        }
+      );
+      const { user, token } = response.data;
 
-      // Save both user and token in localStorage
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", token);
 
+      const isAdmin = await CheckAdmin();
       set({
-        user: user,
+        user: response.data.user,
         isAuthenticated: true,
         isLoading: false,
+        isAdmin,
       });
     } catch (error) {
       set({
@@ -48,20 +52,24 @@ export const useAuth = create((set) => ({
   login: async (email, password) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(`${API_URL}/login`, {
-        email,
-        password,
-      });
-      const { user, token } = response.data; // Destructure token from response
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/login`,
+        {
+          email,
+          password,
+        }
+      );
+      const { user, token } = response.data;
 
-      // Save both user and token in localStorage
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", token);
+
+      const isAdmin = await CheckAdmin();
       set({
         user: response.data.user,
         isAuthenticated: true,
-        error: null,
         isLoading: false,
+        isAdmin,
       });
     } catch (error) {
       set({
@@ -76,54 +84,59 @@ export const useAuth = create((set) => ({
   logout: async () => {
     set({ isLoading: true, error: null });
     try {
-      await axios.post(`${API_URL}/logout`);
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/logout`);
       localStorage.removeItem("user");
-      set({ user: null, isAuthenticated: false, isLoading: false });
+      localStorage.removeItem("token");
+      set({
+        user: null,
+        isAuthenticated: false,
+        isAdmin: false, // Reset to false on logout
+        isAdminLoading: false,
+        isLoading: false,
+      });
     } catch (error) {
       set({ error: "Error logging out", isLoading: false });
       throw error;
     }
   },
 
-  forgotPassword: async (email) => {
-    set({ isLoading: true, error: null });
-    try {
-      const response = await axios.post(`${API_URL}/forgot-password`, {
-        email,
-      });
-      set({ message: response.data.message, isLoading: false });
-    } catch (error) {
-      set({
-        isLoading: false,
-        error:
-          error.response.data.message || "Error sending reset password email",
-      });
-      throw error;
-    }
+  // Sync across tabs
+  syncUserAcrossTabs: () => {
+    window.addEventListener("storage", async (event) => {
+      if (event.key === "user") {
+        const user = JSON.parse(event.newValue);
+        const isAuthenticated = !!user;
+        if (user) {
+          const isAdmin = await CheckAdmin();
+          set({ user, isAuthenticated, isAdmin });
+        } else {
+          set({
+            user: null,
+            isAuthenticated: false,
+            isAdmin: false,
+          });
+        }
+      }
+    });
   },
 
-  resetPassword: async (token, password) => {
-    set({ isLoading: true, error: null });
-    try {
-      const response = await axios.post(`${API_URL}/reset-password/${token}`, {
-        password,
-      });
-      set({ message: response.data.message, isLoading: false });
-    } catch (error) {
+  // Check admin status on app load
+  checkAdminOnLoad: async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      const isAdmin = await CheckAdmin();
       set({
-        isLoading: false,
-        error: error.response.data.message || "Error resetting password",
+        user,
+        isAuthenticated: true,
+        isAdmin,
+        isAdminLoading: false,
       });
-      throw error;
+    } else {
+      set({ isAdminLoading: false });
     }
   },
 }));
 
-// Sync across tabs
-window.addEventListener("storage", (event) => {
-  if (event.key === "user") {
-    const user = event.newValue ? JSON.parse(event.newValue) : null;
-    const isAuthenticated = !!user;
-    useAuth.getState().set({ user, isAuthenticated });
-  }
-});
+// Initialize the sync across tabs functionality
+useAuth.getState().syncUserAcrossTabs();
+useAuth.getState().checkAdminOnLoad();

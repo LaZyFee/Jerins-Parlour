@@ -5,22 +5,27 @@ import { connectDB } from "./DB/connectDB.js";
 import authRoutes from "./Routes/authRoutes.js";
 import serviceRoutes from "./Routes/serviceRoutes.js";
 import bookingRoutes from "./Routes/bookingRoutes.js";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Manually create __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-app.use(cors(
-    {
-        origin: "http://localhost:5173",
-        credentials: true
-    }
-));
+dotenv.config();
+
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-dotenv.config();
 const PORT = process.env.PORT || 5000;
 
-// Serve static files from the 'uploads' directory for profile pictures
-app.use("/uploads", express.static("uploads"));
+// Serve static files (images)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get("/", (req, res) => {
     res.send("Hello World! from Jerins Parlour backend");

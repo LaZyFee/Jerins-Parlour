@@ -1,3 +1,6 @@
+{
+  /* eslint-disable no-unused-vars */
+}
 import { useState, useEffect } from "react";
 import { useAuth } from "../../Store/AuthStore";
 import { useForm } from "react-hook-form";
@@ -29,7 +32,7 @@ function Booking() {
   const onSubmit = (data) => {
     setBooking(data);
     console.log("Booking data:", data);
-    // navigate("/booking-list");
+    navigate("/booking-list");
   };
 
   return (
@@ -110,7 +113,7 @@ function Booking() {
             readOnly
             placeholder="Service"
             className="input input-bordered w-full my-2 bg-white text-black"
-            value={service?.title || "No service selected"} // Access service title
+            value={service?.title || "Please Visit Avaialble Service page "} // Access service title
           />
         </div>
 

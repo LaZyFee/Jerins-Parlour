@@ -16,7 +16,7 @@ router.post("/login", loginUser);
 router.get("/check-admin", verifyToken, checkAdmin);
 
 // Logout route
-router.get("/logout", verifyToken, logoutUser);
+router.post("/logout", logoutUser);
 
 // Make user admin
 router.put("/make-admin", verifyToken, verifyAdmin, makeAdmin);

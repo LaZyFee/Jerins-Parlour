@@ -24,7 +24,13 @@ function Login() {
       toast.success("Login successfully");
       navigate("/");
     } catch (error) {
-      setLoginError(error.message || "Error logging in");
+      // Check for specific error status
+      if (error.response && error.response.status === 401) {
+        setLoginError("Invalid email or password, please try again");
+        toast.error("Invalid email or password, please try again");
+      } else {
+        setLoginError(error.message || "Error logging in");
+      }
     }
   };
 
