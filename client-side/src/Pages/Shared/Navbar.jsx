@@ -1,13 +1,12 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import NavLogo from "../../../src/assets/logo.png";
 import { useAuth } from "../../Store/AuthStore";
 import noImageFound from "../../assets/images/user.jpg";
 import { toast } from "react-hot-toast";
 
 function Navbar() {
+  const navigate = useNavigate();
   const { user, logout, isAdmin } = useAuth();
-  console.log("user:", user, "isAdmin:", isAdmin);
-
   const menuItems = [
     { name: "Home", path: "/" },
     { name: "Our Portfolio", path: "/portfolio" },
@@ -32,6 +31,7 @@ function Navbar() {
   const handleLogout = async () => {
     try {
       await logout();
+      navigate("/");
       toast.success("Logout successfully");
     } catch (error) {
       console.error("Logout error:", error);

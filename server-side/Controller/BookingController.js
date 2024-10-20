@@ -13,8 +13,7 @@ export const addBooking = async (req, res) => {
             email,
             phone,
             service,
-            total,
-            userId: req.user?._id || null // Add userId if logged in
+            total
         });
 
         res.status(200).json(booking);
@@ -57,27 +56,23 @@ export const updateBookingStatus = async (req, res) => {
     }
 };
 
-// User or visitor: Get bookings by userId or email
 export const getUserBookings = async (req, res) => {
     try {
-        const { userId } = req.user || {}; // Use user ID from auth middleware
-        const email = req.query.email || null; // Fallback for visitors
+        // Fetch email from query parameters
+        const { email } = req.query;
 
-        let bookings;
-
-        if (userId) {
-            bookings = await BookingModel.find({ userId }); // Get bookings by userId
-        } else if (email) {
-            bookings = await BookingModel.find({ email }); // Get bookings by email for visitors
-        } else {
-            return res.status(400).json({ message: "User ID or email required" });
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
         }
 
+        // Find all bookings with the provided email
+        const bookings = await BookingModel.find({ email });
         res.status(200).json(bookings);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 // Delete a booking
 export const deleteBooking = async (req, res) => {
