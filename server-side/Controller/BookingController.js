@@ -131,3 +131,11 @@ export const getReviews = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+export const getAllReviews = async (req, res) => {
+    try {
+        const reviews = await ReviewModel.find();
+        res.status(200).json(reviews);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+} 

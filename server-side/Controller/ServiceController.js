@@ -27,6 +27,7 @@ export const addService = async (req, res) => {
 
 // Update service with image
 
+
 export const updateService = async (req, res) => {
     try {
         // Find the existing service
@@ -49,9 +50,25 @@ export const updateService = async (req, res) => {
             updateFields.description = req.body.description;
         }
 
-        // Store image path if a new image is uploaded
-        if (req.file) {
-            // Delete the old image file if it exists
+        // Handle image removal if the removeImage flag is set
+        if (req.body.removeImage === "true") {
+            // Check if the service has an existing image
+            const oldImagePath = existingService.image;
+            if (oldImagePath) {
+                // Delete the old image file
+                fs.unlink(oldImagePath, (err) => {
+                    if (err) {
+                        console.error("Failed to delete old image:", err);
+                    }
+                });
+                // Set the image field to null
+                updateFields.image = null;
+            }
+        }
+
+        // Store new image path if a new image is uploaded and removeImage is false
+        if (req.file && req.body.removeImage !== "true") {
+            // Delete the old image file if it exists and if not already removed
             const oldImagePath = existingService.image;
             if (oldImagePath) {
                 fs.unlink(oldImagePath, (err) => {
@@ -81,6 +98,7 @@ export const updateService = async (req, res) => {
 
 
 
+
 export const getAllServices = async (req, res) => {
     try {
         const services = await ServiceModel.find();
@@ -93,7 +111,10 @@ export const getAllServices = async (req, res) => {
 export const removeService = async (req, res) => {
     try {
         const service = await ServiceModel.findByIdAndDelete(req.params.id);
-        res.status(200).json(service);
+        if (!service) {
+            return res.status(404).json({ message: "Service not found" });
+        }
+        res.status(200).json({ message: "Service deleted successfully", service });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

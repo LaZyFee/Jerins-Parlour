@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet";
 import { toast } from "react-hot-toast";
 import PrimaryButton from "../../Components/PrimaryButton";
 import { useAuth } from "../../Store/AuthStore";
@@ -37,10 +36,6 @@ function Signup() {
         alt="signup"
         className="w-1/3 text-center mx-auto"
       />
-
-      <Helmet>
-        <title>Signup - Jerin&apos;s Parlour</title>
-      </Helmet>
       <div className="flex w-full flex-col">
         <div className="hero my-10">
           <div className="flex-col border border-black p-4 lg:w-1/3">

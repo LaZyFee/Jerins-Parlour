@@ -1,32 +1,55 @@
+import axios from "axios";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 
 function AddService() {
+  const [selectedImage, setSelectedImage] = useState(null);
   const {
     register,
     handleSubmit,
-    setValue,
     reset,
     formState: { errors },
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log(data);
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("price", data.price);
+    formData.append("description", data.description);
 
-    // Show SweetAlert success message
-    Swal.fire({
-      icon: "success",
-      title: "Service added successfully!",
-      showConfirmButton: false,
-      timer: 2000,
-      toast: true,
-      position: "top-right",
-    });
+    // Append the selected image to the FormData if it exists
+    if (selectedImage) {
+      formData.append("image", selectedImage);
+    }
 
-    // Clear the form fields after successful submit
-    reset();
+    axios
+      .post(`${import.meta.env.VITE_BACKEND_URL}/addService`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then(() => {
+        Swal.fire({
+          icon: "success",
+          title: "Service added successfully!",
+          showConfirmButton: false,
+          timer: 2000,
+          toast: true,
+          position: "top-right",
+        });
+        reset();
+        setSelectedImage(null);
+      })
+      .catch((err) => {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: err.response?.data?.message || "Failed to add service",
+        });
+      });
   };
 
   return (
@@ -34,7 +57,6 @@ function AddService() {
       <h1 className="text-3xl font-bold text-center">Add Service</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="my-4">
         <div className="flex flex-col lg:flex-row gap-5 bg-white p-5 lg:p-10 rounded-lg min-h-72 lg:mx-10">
-          {/* Left Column */}
           <div className="w-full lg:w-1/2 flex flex-col gap-4">
             <label htmlFor="name" className="text-gray-700 font-semibold">
               Service Name
@@ -55,14 +77,11 @@ function AddService() {
             </label>
             <input
               id="price"
-              type="number" // Input type set to number
+              type="number"
               placeholder="Service Price"
               {...register("price", {
                 required: "Service price is required",
-                min: {
-                  value: 0,
-                  message: "Price must be a positive number",
-                },
+                min: { value: 0, message: "Price must be a positive number" },
               })}
               className="input input-bordered w-full bg-white text-black"
             />
@@ -94,7 +113,6 @@ function AddService() {
             )}
           </div>
 
-          {/* Right Column */}
           <div className="w-full lg:w-1/2 flex flex-col gap-4">
             <label className="text-gray-700 font-semibold">Service Image</label>
 
@@ -111,15 +129,8 @@ function AddService() {
               type="file"
               id="image"
               className="hidden"
-              {...register("image", { required: "Image is required" })}
+              onChange={(e) => setSelectedImage(e.target.files[0])} // Set the selected image
             />
-
-            {/* Error message */}
-            {errors.image && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.image.message}
-              </p>
-            )}
           </div>
         </div>
 

@@ -19,6 +19,7 @@ import AdminLayouts from "../Layouts/AdminLayouts";
 import Services from "../Pages/Outlets/Services";
 import Checkout from "../Pages/Customer/Payments/Checkout";
 import Profile from "../Pages/Outlets/Profile";
+import UpdateService from "../Pages/Admin/UpdateService";
 
 export const router = createBrowserRouter([
   {
@@ -53,27 +54,31 @@ export const router = createBrowserRouter([
           },
         ],
       },
+    ],
+  },
+  {
+    path: "/admin/dashboard",
+    element: <AdminLayouts />,
+    children: [
       {
-        path: "/admin/dashboard",
-        element: <AdminLayouts />,
-        children: [
-          {
-            path: "",
-            element: <OrderList />,
-          },
-          {
-            path: "add-service",
-            element: <AddService />,
-          },
-          {
-            path: "make-admin",
-            element: <MakeAdmin />,
-          },
-          {
-            path: "manage-services",
-            element: <ManageService />,
-          },
-        ],
+        path: "",
+        element: <OrderList />,
+      },
+      {
+        path: "add-service",
+        element: <AddService />,
+      },
+      {
+        path: "make-admin",
+        element: <MakeAdmin />,
+      },
+      {
+        path: "manage-services",
+        element: <ManageService />,
+      },
+      {
+        path: "update-service",
+        element: <UpdateService />,
       },
     ],
   },

@@ -6,7 +6,8 @@ import {
     getUserBookings,        // User gets their bookings
     deleteBooking,
     addReview,
-    getReviews
+    getReviews,
+    getAllReviews
 } from "../Controller/BookingController.js";
 
 const router = express.Router();
@@ -26,8 +27,14 @@ router.get("/user/bookings", getUserBookings);
 // Delete booking
 router.delete("/deleteBooking/:id", deleteBooking);
 
+// Add review
 router.post("/addReview", addReview);
 
+// Get reviews as an user
 router.get("/getReviews", getReviews);
+
+// Get reviews as an admin
+router.get("/admin/getReviews", getAllReviews);
+
 
 export default router;

@@ -1,10 +1,11 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { GiNotebook } from "react-icons/gi";
-import { FaPlus, FaUserPlus } from "react-icons/fa";
+import { FaHome, FaPlus, FaUserPlus } from "react-icons/fa";
 import { IoGridOutline } from "react-icons/io5";
 
 function AdminLayouts() {
   const menuItems = [
+    { name: "Home", icon: <FaHome />, path: "/" },
     { name: "Order List", icon: <GiNotebook />, path: "." },
     { name: "Add Service", icon: <FaPlus />, path: "add-service" },
     { name: "Make Admin", icon: <FaUserPlus />, path: "make-admin" },
@@ -34,10 +35,10 @@ function AdminLayouts() {
           aria-label="close sidebar"
           className="drawer-overlay"
         ></label>
-        <ul className="menu bg-base-200 text-base-content min-h-full w-64 p-4 text-xl">
+        <ul className="menu bg-base-200 text-base-content min-h-full w-64 p-4 text-xl place-content-center">
           {/* Sidebar content here */}
           {menuItems.map((item) => (
-            <li key={item.name}>
+            <li key={item.name} className="mb-4">
               <NavLink
                 to={item.path}
                 className={({ isActive }) => (isActive ? "text-[#F63E7B]" : "")}
