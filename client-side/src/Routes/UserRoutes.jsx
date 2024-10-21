@@ -17,6 +17,8 @@ import MakeAdmin from "../Pages/Admin/MakeAdmin";
 import ManageService from "../Pages/Admin/ManageService";
 import AdminLayouts from "../Layouts/AdminLayouts";
 import Services from "../Pages/Outlets/Services";
+import Checkout from "../Pages/Customer/Payments/Checkout";
+import Profile from "../Pages/Outlets/Profile";
 
 export const router = createBrowserRouter([
   {
@@ -27,10 +29,8 @@ export const router = createBrowserRouter([
       { path: "/portfolio", element: <OurPortfolio /> },
       { path: "/team", element: <OurTeam /> },
       { path: "/contact", element: <ContactUs /> },
-      {
-        path: "/services",
-        element: <Services />,
-      },
+      { path: "/services", element: <Services /> },
+      { path: "/profile", element: <Profile /> },
       {
         path: "/booking",
         element: <CustomerLayout />,
@@ -46,6 +46,10 @@ export const router = createBrowserRouter([
           {
             path: "review",
             element: <CustomerReviews />,
+          },
+          {
+            path: "checkout",
+            element: <Checkout />,
           },
         ],
       },

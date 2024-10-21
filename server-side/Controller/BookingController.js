@@ -1,4 +1,5 @@
 import { BookingModel } from "../Models/BookingModel.js";
+import { ReviewModel } from "../Models/ReviewModel.js";
 
 // Add a booking (common for user or visitor)
 export const addBooking = async (req, res) => {
@@ -82,6 +83,50 @@ export const deleteBooking = async (req, res) => {
             return res.status(404).json({ message: "Booking not found" });
         }
         res.status(200).json({ message: "Booking deleted", booking });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+// Add a review
+export const addReview = async (req, res) => {
+    try {
+        const { name, email, comment, service, rating, date } = req.body;
+
+        if (!name || !email || !comment || !service || !rating || !date) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        const review = await ReviewModel.create({
+            name,
+            email,
+            comment,
+            date: new Date(date),
+            rating,
+            service,
+        });
+
+        res.status(200).json(review);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+export const getReviews = async (req, res) => {
+    try {
+        const { email } = req.query;
+
+        if (!email) {
+            return res.status(400).json({ message: "Email is required." });
+        }
+
+        const reviews = await ReviewModel.find({ email });
+
+        if (!reviews.length) {
+            return res.status(404).json({ message: "No reviews found." });
+        }
+
+        res.status(200).json(reviews);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

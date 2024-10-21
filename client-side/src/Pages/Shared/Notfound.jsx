@@ -1,9 +1,12 @@
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const NotFound = () => {
+  const navigate = useNavigate();
+
   const handleGoBack = () => {
-    Navigate(-1); // Navigate back to the previous page
+    navigate(-1);
   };
+
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <div className="text-center">

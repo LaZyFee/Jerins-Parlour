@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 function BookingList() {
   const [bookingList, setBookingList] = useState([]);
   const { user } = useAuth();
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (user && user.email) {
@@ -31,7 +31,7 @@ function BookingList() {
   }, [user]);
 
   if (loading) {
-    return <p>Loading bookings...</p>; // Show loading state
+    return <p>Loading bookings...</p>;
   }
 
   return (
@@ -39,7 +39,7 @@ function BookingList() {
       <h1 className="text-3xl font-bold text-center my-5">Booking List</h1>
       {bookingList && bookingList.length > 0 ? (
         <div className="overflow-x-auto">
-          <table className="table table-zebra">
+          <table className="table">
             <thead>
               <tr>
                 <th>Customer Name</th>
@@ -58,7 +58,18 @@ function BookingList() {
                   <td>{booking.service}</td>
                   <td>{booking.total}</td>
                   <td>{booking.status}</td>
-                  <td>{booking.payment}</td>
+                  <td>
+                    {booking.total && !booking.paid && (
+                      <Link to="/booking/checkout" state={{ booking }}>
+                        <button className="btn bg-[#F63E7B] px-8 text-white">
+                          Pay
+                        </button>
+                      </Link>
+                    )}
+                    {booking.total && booking.paid && (
+                      <span className="text-green-500">Paid</span>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>

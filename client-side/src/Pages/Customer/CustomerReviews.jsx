@@ -1,21 +1,68 @@
-import { useState } from "react";
+/* eslint-disable no-unused-vars */
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../Store/AuthStore";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useEffect, useState } from "react";
+import { FaStar } from "react-icons/fa";
 
 function CustomerReviews() {
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [rating, setRating] = useState(0);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
+    setValue,
   } = useForm();
-  const [review, setReview] = useState({});
+  const { user } = useAuth();
 
-  const { user } = useAuth(); // Assuming user data is available here
-
-  const onSubmit = (data) => {
-    console.log("review:", data);
-    setReview(data?.description);
+  const handleStarClick = (value) => {
+    setRating(value);
+    setValue("rating", value);
   };
+
+  const onSubmit = async (data) => {
+    try {
+      const currentDate = new Date().toISOString();
+      const reviewData = {
+        name: user?.name,
+        email: user?.email,
+        comment: data.description,
+        service: data.service,
+        rating: data.rating,
+        date: currentDate,
+      };
+
+      console.log(reviewData);
+
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/addReview`,
+        reviewData
+      );
+      toast.success("Review submitted successfully!");
+      reset();
+      setRating(0);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to submit the review");
+    }
+  };
+
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_BACKEND_URL}/getAllServices`)
+      .then((response) => {
+        setServices(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching services:", error);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <>
@@ -26,32 +73,57 @@ function CustomerReviews() {
       >
         <input
           type="text"
-          placeholder={user?.name ? user.name : "Enter your name"}
-          {...register("name", { required: true })}
           className="input input-bordered bg-white text-black"
-          defaultValue={user?.name || ""}
-          readOnly={!!user?.name}
+          defaultValue={user?.name}
+          readOnly
+          {...register("name")}
         />
-        {errors.name && <p className="text-red-500">Name is required</p>}
-
         <input
           type="email"
-          placeholder={user?.email ? user.email : "Enter your email"}
-          {...register("email", { required: true })}
           className="input input-bordered bg-white text-black"
-          defaultValue={user?.email || ""}
-          readOnly={!!user?.email}
+          defaultValue={user?.email}
+          readOnly
+          {...register("email")}
         />
-        {errors.email && <p className="text-red-500">Email is required</p>}
+
+        <select
+          className="select select-bordered bg-white text-black"
+          {...register("service", { required: "Service is required" })}
+        >
+          {services.map((service) => (
+            <option key={service._id} value={service.name}>
+              {service.name}
+            </option>
+          ))}
+        </select>
+
+        <div className="flex items-center">
+          <label className="label">
+            <span className="label-text">Rating</span>
+          </label>
+          <div className="flex ml-2">
+            {[1, 2, 3, 4, 5].map((value) => (
+              <FaStar
+                key={value}
+                className={`cursor-pointer ${
+                  value <= rating ? "text-yellow-500" : "text-gray-400"
+                }`}
+                onClick={() => handleStarClick(value)}
+                size={24}
+              />
+            ))}
+          </div>
+        </div>
 
         <textarea
           placeholder="Enter your review"
-          {...register("description", { required: true })}
           className="textarea textarea-bordered bg-white text-black"
+          {...register("description", { required: "Description is required" })}
         />
         {errors.description && (
-          <p className="text-red-500">Description is required</p>
+          <p className="text-red-500">{errors.description.message}</p>
         )}
+
         <div>
           <button
             type="submit"

@@ -1,10 +1,6 @@
-{
-  /* eslint-disable no-unused-vars */
-}
 import { useAuth } from "../../Store/AuthStore";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
-import { BsFillCreditCard2FrontFill, BsPaypal } from "react-icons/bs";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 function Booking() {
@@ -50,31 +46,32 @@ function Booking() {
       >
         <div className="form-control w-full">
           <input
-            placeholder={user?.name}
             className={`input input-bordered w-full my-2 bg-white text-black`}
+            defaultValue={user?.name}
             readOnly
           />
 
           {/* Email Input */}
           <input
-            placeholder={user?.email}
             className={`input input-bordered w-full my-2 bg-white text-black`}
+            defaultValue={user?.email}
             readOnly
           />
 
           {/* Phone Input */}
           <input
-            placeholder={user?.phone}
             className={`input input-bordered w-full my-2 bg-white text-black`}
+            defaultValue={user?.phone}
             readOnly
           />
           {/* Service Input */}
           <input
             type="text"
             readOnly
-            placeholder="Service"
             className="input input-bordered w-full my-2 bg-white text-black"
-            value={service?.name || "Please Visit Avaialble Service page "}
+            defaultValue={
+              service?.name || "Please Visit Avaialble Service page "
+            }
           />
         </div>
 
@@ -98,39 +95,3 @@ function Booking() {
 }
 
 export default Booking;
-
-//  {/* Payment */}
-//  <div className="flex items-center space-x-4">
-//  <div className="flex items-center space-x-2">
-//    <input
-//      type="radio"
-//      id="payment"
-//      name="payment"
-//      className="radio"
-//      defaultChecked
-//    />
-//    <label className="label">
-//      <span className="label-text flex items-center space-x-2">
-//        <BsFillCreditCard2FrontFill className="text-3xl text-blue-500" />{" "}
-//        <span>Credit Card</span>
-//      </span>
-//    </label>
-//  </div>
-
-//  <div className="flex items-center space-x-2">
-//    <input
-//      type="radio"
-//      id="payment"
-//      name="payment"
-//      className="radio"
-//      value="Paypal"
-//      disabled
-//    />
-//    <label className="label">
-//      <span className="label-text flex items-center space-x-2">
-//        <BsPaypal className="text-3xl text-blue-500" />{" "}
-//        <span>Paypal</span>
-//      </span>
-//    </label>
-//  </div>
-// </div>
