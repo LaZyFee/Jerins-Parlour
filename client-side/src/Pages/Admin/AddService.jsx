@@ -1,12 +1,13 @@
 import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { IoCloudUploadOutline } from "react-icons/io5";
+import { IoCloudUploadOutline, IoTrashOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 
 function AddService() {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const {
     register,
     handleSubmit,
@@ -42,6 +43,7 @@ function AddService() {
         });
         reset();
         setSelectedImage(null);
+        setImagePreview(null); // Clear image preview
       })
       .catch((err) => {
         Swal.fire({
@@ -50,6 +52,19 @@ function AddService() {
           text: err.response?.data?.message || "Failed to add service",
         });
       });
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedImage(file);
+      setImagePreview(URL.createObjectURL(file)); // a temporary URL for the image preview
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setSelectedImage(null);
+    setImagePreview(null); // Clear image preview
   };
 
   return (
@@ -129,8 +144,27 @@ function AddService() {
               type="file"
               id="image"
               className="hidden"
-              onChange={(e) => setSelectedImage(e.target.files[0])} // Set the selected image
+              onChange={handleImageChange} // Handle image change
             />
+
+            {/* Image preview */}
+            {imagePreview && (
+              <div className="relative mt-4">
+                <img
+                  src={imagePreview}
+                  alt="Selected"
+                  className="w-40 h-36 object-cover rounded-lg"
+                />
+                {/* Remove button */}
+                <button
+                  type="button"
+                  className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600"
+                  onClick={handleRemoveImage}
+                >
+                  <IoTrashOutline className="text-xl" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
