@@ -2,24 +2,33 @@ import mongoose from 'mongoose';
 
 const orderSchema = new mongoose.Schema({
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        },
+        name: {
+            type: String,
+            required: true
+        },
+        email: {
+            type: String,
+            required: true
+        },
+        phone: {
+            type: String,
+            required: true
+        }
+    },
+    orderItem: {
+        type: String,
         required: true
     },
-    orderItems: [
-        {
-            name: { type: String, required: true },
-            price: { type: Number, required: true }
-        }
-    ],
     totalPrice: {
         type: Number,
         required: true
     },
-    isPaid: {
-        type: Boolean,
-        default: false
-    },
+
     paidAt: {
         type: Date
     },
@@ -36,4 +45,3 @@ const orderSchema = new mongoose.Schema({
 });
 
 export const OrderModel = mongoose.model('Order', orderSchema);
-

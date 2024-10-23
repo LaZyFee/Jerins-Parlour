@@ -1,14 +1,9 @@
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
 import { useLocation } from "react-router-dom";
-import Stripe from "./Stripe";
 import { BsFillCreditCard2FrontFill, BsPaypal } from "react-icons/bs";
 import PayPalButton from "../../../Components/PaypalButton";
 import StripeButton from "../../../Components/StripeButton";
-import { PayPalScriptProvider } from "@paypal/react-paypal-js"; // Import PayPalScriptProvider
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { useState } from "react";
-
-const stripePromise = loadStripe(import.meta.env.VITE_stripe_pk);
 
 function Checkout() {
   const location = useLocation();
@@ -21,11 +16,13 @@ function Checkout() {
     setSelectedPaymentMethod(e.target.value);
   };
 
-  const { total, service, name } = booking || {};
-  const totalPrice = total;
-  const orderItems = booking?.items || [];
-  const userId = booking?.userId || "";
-
+  const totalPrice = booking?.total;
+  const orderItem = booking?.service;
+  const userId = booking?.userId;
+  const bookingId = booking?._id;
+  const name = booking?.name;
+  const email = booking?.email;
+  const phone = booking?.phone;
   return (
     <>
       <div className="card shadow-xl mx-auto my-5">
@@ -33,7 +30,7 @@ function Checkout() {
           <h2 className="card-title">Hello, {name}</h2>
           <p className="text-lg font-serif font-semibold">
             Thank you for choosing{" "}
-            <span className="font-bold text-[#F63E7B]">{service}</span> <br />
+            <span className="font-bold text-[#F63E7B]">{orderItem}</span> <br />
             Please confirm your booking. <br /> You have to pay{" "}
             <span className="font-bold text-[#F63E7B]"> ${totalPrice}</span>
           </p>
@@ -79,14 +76,15 @@ function Checkout() {
           </div>
 
           {selectedPaymentMethod === "creditCard" && (
-            <Elements stripe={stripePromise}>
-              <Stripe booking={booking} />
-              <StripeButton
-                totalPrice={totalPrice}
-                orderItems={orderItems}
-                userId={userId}
-              />
-            </Elements>
+            <StripeButton
+              totalPrice={totalPrice}
+              orderItem={orderItem}
+              userId={userId}
+              bookingId={bookingId}
+              customerName={name}
+              customerEmail={email}
+              customerPhone={phone}
+            />
           )}
 
           {selectedPaymentMethod === "paypal" && (
@@ -94,11 +92,12 @@ function Checkout() {
               options={{
                 "client-id": import.meta.env.VITE_PAYPAL_CLIENT_ID,
                 components: "buttons",
+                currency: "USD",
               }}
             >
               <PayPalButton
                 totalPrice={totalPrice}
-                orderItems={orderItems}
+                orderItems={orderItem}
                 userId={userId}
               />
             </PayPalScriptProvider>

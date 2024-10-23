@@ -7,19 +7,30 @@ import { toast } from "react-hot-toast";
 // Initialize Stripe
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
-const StripeButton = ({ totalPrice, orderItems, userId }) => {
+const StripeButton = ({
+  totalPrice,
+  orderItem,
+  userId,
+  bookingId,
+  customerName,
+  customerEmail,
+  customerPhone,
+}) => {
   const handleStripePayment = async () => {
     try {
       const { data: sessionData } = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/payment/stripe`,
         {
-          orderItems,
+          orderItem,
           totalPrice,
           userId,
+          customerName,
+          customerEmail,
+          customerPhone,
+          bookingId, // Send bookingId in the request body
         }
       );
 
-      // Redirect to Stripe checkout
       const stripe = await stripePromise;
       const { error } = await stripe.redirectToCheckout({
         sessionId: sessionData.sessionId,
@@ -36,7 +47,10 @@ const StripeButton = ({ totalPrice, orderItems, userId }) => {
   };
 
   return (
-    <button onClick={handleStripePayment} className="btn btn-primary">
+    <button
+      onClick={handleStripePayment}
+      className="btn bg-[#F63E7B] text-white my-5"
+    >
       Pay with Stripe
     </button>
   );

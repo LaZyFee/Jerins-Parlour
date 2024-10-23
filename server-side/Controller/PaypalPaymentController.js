@@ -52,6 +52,7 @@ export const createPayPalPayment = async (req, res) => {
 // Handle success after PayPal redirects back
 export const executePayPalPayment = (req, res) => {
     const { paymentId, PayerID } = req.query;
+    console.log(paymentId, PayerID);
 
     const executePaymentJson = {
         payer_id: PayerID

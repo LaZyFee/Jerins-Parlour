@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useAuth } from "../../Store/AuthStore";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -14,6 +15,7 @@ function Booking() {
   const onSubmit = async () => {
     try {
       const bookingData = {
+        userId: user._id,
         name: user.name,
         email: user.email,
         phone: user.phone,
@@ -25,10 +27,11 @@ function Booking() {
         `${import.meta.env.VITE_BACKEND_URL}/addBooking`,
         bookingData
       );
-      console.log("Booking response:", response.data);
 
+      toast.success("Booking successful");
       navigate("booking-list");
     } catch (error) {
+      toast.error("No service found");
       error.response && toast.error(error.response.data.message);
       console.error("Error while booking:", error.message);
     }

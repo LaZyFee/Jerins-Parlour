@@ -6,6 +6,7 @@ import authRoutes from "./Routes/authRoutes.js";
 import serviceRoutes from "./Routes/serviceRoutes.js";
 import bookingRoutes from "./Routes/bookingRoutes.js";
 import paymentRoutes from "./Routes/paymentRoutes.js";
+import orderRoutes from "./Routes/orderRoutes.js";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -36,6 +37,7 @@ app.use("/", authRoutes);
 app.use("/", serviceRoutes);
 app.use("/", bookingRoutes);
 app.use('/payment', paymentRoutes);
+app.use("/", orderRoutes);
 
 
 app.listen(PORT, () => {

@@ -4,12 +4,13 @@ import { ReviewModel } from "../Models/ReviewModel.js";
 // Add a booking (common for user or visitor)
 export const addBooking = async (req, res) => {
     try {
-        const { name, email, phone, service, total } = req.body;
+        const { name, email, phone, service, total, userId } = req.body;
         if (!name || !email || !phone || !service || !total) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
         const booking = await BookingModel.create({
+            userId,
             name,
             email,
             phone,
