@@ -19,6 +19,8 @@ import Services from "../Pages/Outlets/Services";
 import Checkout from "../Pages/Customer/Payments/Checkout";
 import Profile from "../Pages/Outlets/Profile";
 import UpdateService from "../Pages/Admin/UpdateService";
+import PrivateRoutes from "./PrivateRoutes";
+import AdminRoutes from "./AdminRoutes";
 
 export const router = createBrowserRouter([
   {
@@ -32,7 +34,12 @@ export const router = createBrowserRouter([
       { path: "/profile", element: <Profile /> },
       {
         path: "/booking",
-        element: <CustomerLayout />,
+        element: (
+          <PrivateRoutes>
+            {" "}
+            <CustomerLayout />
+          </PrivateRoutes>
+        ),
         children: [
           {
             path: "",
@@ -56,7 +63,12 @@ export const router = createBrowserRouter([
   },
   {
     path: "/admin/dashboard",
-    element: <AdminLayouts />,
+    element: (
+      <AdminRoutes>
+        {" "}
+        <AdminLayouts />
+      </AdminRoutes>
+    ),
     children: [
       {
         path: "",
