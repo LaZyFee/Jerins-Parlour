@@ -91,14 +91,16 @@ export const deleteBooking = async (req, res) => {
 // Add a review
 export const addReview = async (req, res) => {
     try {
-        const { name, email, comment, service, rating, date } = req.body;
+        const { name, email, comment, service, rating, date, profilepic, username } = req.body;
 
         if (!name || !email || !comment || !service || !rating || !date) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
         const review = await ReviewModel.create({
+            profilepic,
             name,
+            username,
             email,
             comment,
             date: new Date(date),

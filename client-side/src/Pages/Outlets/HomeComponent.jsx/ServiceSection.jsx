@@ -33,14 +33,14 @@ function ServiceSection() {
         Our Awesome <span className="text-[#F63E7B]">Services</span>
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto lg:p-12">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mx-auto lg:mx-10">
         {limitedServices.map((service) => (
           <div
             key={service._id}
-            className="border p-6 rounded-lg text-center transition-transform duration-300 ease-in-out transform hover:shadow-2xl hover:scale-105"
+            className="rounded-lg text-center transition-transform duration-300 ease-in-out transform hover:shadow-2xl hover:scale-105"
           >
-            <div className="card bg-base-100 w-auto shadow-xl">
-              <figure className="h-48">
+            <div className="card bg-base-100 w-auto shadow-xl text-start">
+              <figure>
                 <img
                   src={
                     service.image
@@ -48,6 +48,7 @@ function ServiceSection() {
                       : placeholderImage
                   }
                   alt={service.name}
+                  className="w-full"
                 />
               </figure>
               <div className="card-body">

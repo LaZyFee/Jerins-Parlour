@@ -34,7 +34,7 @@ function Services() {
             </div>
           </div>
           <div className="skeleton h-32 w-full"></div>
-          <p className="text-xl font-bold text-info">Loading...</p>
+          <p className="text-xl font-bold text-">Loading...</p>
         </div>
       </div>
     );
@@ -51,7 +51,7 @@ function Services() {
             className="text-center transition-transform duration-300 ease-in-out transform hover:shadow-2xl hover:scale-105"
           >
             <div className="card bg-base-100 w-auto shadow-xl">
-              <figure className="h-48">
+              <figure className="px-5 pt-5">
                 <img
                   src={
                     service.image
@@ -59,14 +59,16 @@ function Services() {
                       : placeholderImage
                   }
                   alt={service.name || "Service Image"}
-                  className="max-w-full h-full object-cover"
+                  className="w-full"
                 />
               </figure>
-              <div className="card-body">
+              <div className="card-body text-start">
                 <h2 className="card-title">{service.name}</h2>
                 <p>{service.description}</p>
                 <div className="card-actions justify-between items-center my-2">
-                  <div className="text-xl font-bold">${service.price}</div>
+                  <div className="text-xl font-bold text-[#F63E7B]">
+                    ${service.price}
+                  </div>
                   <Link
                     to="/booking"
                     state={{ service }} // Pass service data to the booking page

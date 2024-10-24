@@ -9,7 +9,6 @@ function Navbar() {
   const { user, logout, isAdmin } = useAuth();
   const menuItems = [
     { name: "Home", path: "/" },
-    { name: "Our Portfolio", path: "/portfolio" },
     { name: "Our Team", path: "/team" },
     { name: "Contact Us", path: "/contact" },
     { name: "My Bookings", path: "/booking/booking-list" },

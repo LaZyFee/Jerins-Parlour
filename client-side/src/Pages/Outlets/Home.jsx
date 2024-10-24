@@ -1,7 +1,7 @@
 import HeroSection from "./HomeComponent.jsx/HeroSection";
 import ServiceSection from "./HomeComponent.jsx/ServiceSection";
 import HeroSection2 from "./HomeComponent.jsx/HeroSection2";
-import Testomonial from "./HomeComponent.jsx/Testomonial";
+import Reviews from "./HomeComponent.jsx/Reviews";
 import Contactus from "./HomeComponent.jsx/Contactus";
 
 function Home() {
@@ -17,7 +17,7 @@ function Home() {
       <HeroSection2 />
 
       {/* Testimonials Section */}
-      <Testomonial />
+      <Reviews />
 
       {/* CTA Section */}
       <Contactus />

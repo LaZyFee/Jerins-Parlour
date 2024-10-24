@@ -33,8 +33,8 @@ router.post("/addReview", addReview);
 // Get reviews as an user
 router.get("/getReviews", getReviews);
 
-// Get reviews as an admin
-router.get("/admin/getReviews", getAllReviews);
+// Get all reviews 
+router.get("/getAllReviews", getAllReviews);
 
 
 export default router;

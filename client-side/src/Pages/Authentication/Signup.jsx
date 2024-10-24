@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 import PrimaryButton from "../../Components/PrimaryButton";
 import { useAuth } from "../../Store/AuthStore";
 import PasswordStrengthMeter from "./PasswordStrentghMeter";
+import { IoCloudUploadOutline } from "react-icons/io5";
 
 function Signup() {
   const {
@@ -18,14 +19,23 @@ function Signup() {
   const { signup, isLoading } = useAuth();
 
   const handleSignUp = async (data) => {
-    const { name, username, email, phone, password } = data;
+    const { name, username, email, phone, password, profilePic } = data;
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("username", username);
+    formData.append("email", email);
+    formData.append("phone", phone);
+    formData.append("password", password);
+    formData.append("profilePic", profilePic[0]);
 
     try {
-      await signup(name, username, email, phone, password);
+      await signup(formData);
       toast.success("Sign up successfully");
       navigate("/");
     } catch (error) {
-      setSignUPError(error.message || "Error signing up");
+      setSignUPError("Error signing up", error);
+      toast.error("Error signing up", signUpError);
     }
   };
 
@@ -126,11 +136,28 @@ function Signup() {
                 {/* Render PasswordStrengthMeter only if password exists */}
                 {password && <PasswordStrengthMeter password={password} />}
 
-                {signUpError && <p className="text-red-500">{signUpError}</p>}
+                <div>
+                  {/* Custom file upload button */}
+                  <label
+                    htmlFor="profilePic"
+                    className="btn bg-[#F63E7B] text-white w-full lg:w-1/2 flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <IoCloudUploadOutline /> Upload Image
+                  </label>
 
-                {/* <input className='btn btn-accent w-full mt-4' value="Sign Up" type="submit" disabled={isLoading} />
-                    {signUpError && <p className='text-red-600'>{signUpError}</p>}
-                    {error && <p className='text-red-600'>{error}</p>}*/}
+                  {/* Hidden file input */}
+                  <input
+                    type="file"
+                    id="profilePic"
+                    className="hidden"
+                    {...register("profilePic", {
+                      required: "Profile picture is required",
+                    })}
+                  />
+                  {errors.profilePic && (
+                    <p className="text-red-500">{errors.profilePic.message}</p>
+                  )}
+                </div>
 
                 <div className="form-control mt-6 items-center">
                   <PrimaryButton type="submit" disabled={isLoading}>

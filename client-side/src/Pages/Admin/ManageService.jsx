@@ -84,8 +84,8 @@ function ManageService() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mx-auto lg:mx-10">
         {services.map((service) => (
           <div key={service._id}>
-            <div className="card bg-base-100 lg:w-76 shadow-xl">
-              <figure className="px-10 pt-10">
+            <div className="card  lg:w-76 shadow-xl">
+              <figure>
                 <img
                   src={
                     service.image
@@ -93,6 +93,7 @@ function ManageService() {
                       : placeholderImage
                   }
                   alt={service.name || "Service Image"}
+                  className="w-full h-56 object-cover"
                 />
               </figure>
               <div className="card-body">

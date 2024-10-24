@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { IoCloudUploadOutline } from "react-icons/io5";
+import { IoCloudUploadOutline, IoTrashOutline } from "react-icons/io5";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const placeholderImage = "https://via.placeholder.com/300x200?text=No+Image";
@@ -15,6 +15,7 @@ function UpdateService() {
   const { register, handleSubmit, reset } = useForm();
   const [selectedImage, setSelectedImage] = useState(null);
   const [removeImage, setRemoveImage] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const serviceId = service._id;
 
@@ -24,12 +25,12 @@ function UpdateService() {
     formData.append("price", data.price);
     formData.append("description", data.description);
 
-    // If the user has selected an image and has not opted to remove it, append the image
+    // If a new image is selected and not marked for removal
     if (selectedImage && !removeImage) {
       formData.append("image", selectedImage);
     }
 
-    // Append flag to indicate if the image should be removed
+    // Flag indicating whether to remove the image
     formData.append("removeImage", removeImage);
 
     axios
@@ -45,6 +46,7 @@ function UpdateService() {
       .then(() => {
         toast.success("Service updated successfully");
         reset();
+        setImagePreview(null);
         navigate("/admin/dashboard/manage-services");
       })
       .catch((err) => {
@@ -53,12 +55,19 @@ function UpdateService() {
       });
   };
 
+  // Handle file selection and preview generation
   const handleFileChange = (e) => {
-    setSelectedImage(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedImage(file);
+      setImagePreview(URL.createObjectURL(file)); // Create preview for the selected file
+    }
   };
 
+  // Handle toggling image removal
   const handleRemoveImage = () => {
-    setRemoveImage((prev) => !prev); // Toggle the image removal flag
+    setImagePreview(null); // Clear the image preview if removing the image
+    setSelectedImage(null); // Clear selected image if removing the image
   };
 
   return (
@@ -68,9 +77,7 @@ function UpdateService() {
         <div className="flex flex-col lg:flex-row gap-5 bg-white p-5 lg:p-10 rounded-lg min-h-72 lg:mx-10">
           {/* Left Column */}
           <div className="w-full lg:w-1/2 flex flex-col gap-4">
-            <label htmlFor="name" className="text-gray-700 font-semibold">
-              Current Image
-            </label>
+            <label className="text-gray-700 font-semibold">Current Image</label>
             <img
               src={
                 service.image && !removeImage
@@ -78,7 +85,7 @@ function UpdateService() {
                   : placeholderImage
               }
               className="w-40 h-32 object-cover object-center"
-              alt="{service.name image}"
+              alt="Service"
             />
 
             <label htmlFor="name" className="text-gray-700 font-semibold">
@@ -112,12 +119,12 @@ function UpdateService() {
             <textarea
               id="description"
               className="textarea textarea-bordered w-full min-h-[100px] max-h-[200px] resize-none bg-white"
-              style={{ whiteSpace: "pre-wrap" }}
               defaultValue={service.description}
               {...register("description", { required: true })}
             ></textarea>
           </div>
 
+          {/* Right Column */}
           <div className="w-full lg:w-1/2 flex flex-col gap-4">
             <label className="text-gray-700 font-semibold">Update Image</label>
             {/* Custom file upload button */}
@@ -136,6 +143,24 @@ function UpdateService() {
               onChange={handleFileChange}
               disabled={removeImage} // Disable if image is set to be removed
             />
+
+            {/* Image preview */}
+            {imagePreview && (
+              <div className="relative mt-4">
+                <img
+                  src={imagePreview}
+                  alt="Selected"
+                  className="w-40 h-36 object-cover rounded-lg"
+                />
+                <button
+                  type="button"
+                  className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600"
+                  onClick={handleRemoveImage}
+                >
+                  <IoTrashOutline className="text-xl" />
+                </button>
+              </div>
+            )}
 
             {/* Remove image option */}
             <label className="flex items-center space-x-2">

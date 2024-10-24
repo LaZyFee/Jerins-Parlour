@@ -16,20 +16,21 @@ export const useAuth = create((set) => ({
   setIsAdmin: (isAdmin) => set({ isAdmin }),
 
   // Signup function
-  signup: async (email, password, name) => {
+  signup: async (formData) => {
     set({ isLoading: true, error: null });
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/signup`,
+        `${import.meta.env.VITE_BACKEND_URL}/register`,
+        formData,
         {
-          email,
-          password,
-          name,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
       const { user, token } = response.data;
 
-      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("user", JSON.stringify(user)); // Ensure username exists in this object
       localStorage.setItem("token", token);
 
       const isAdmin = await CheckAdmin();

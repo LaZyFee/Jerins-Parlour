@@ -4,7 +4,6 @@ import NotFound from "../Pages/Shared/Notfound";
 import Home from "../Pages/Outlets/Home";
 import Signup from "../Pages/Authentication/Signup";
 import Login from "../Pages/Authentication/Login";
-import OurPortfolio from "../Pages/Outlets/OurPortfolio";
 import OurTeam from "../Pages/Outlets/OurTeam";
 import ContactUs from "../Pages/Outlets/ContactUs";
 import CustomerLayout from "../Layouts/CustomerLayout";
@@ -27,7 +26,6 @@ export const router = createBrowserRouter([
     element: <Main />,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/portfolio", element: <OurPortfolio /> },
       { path: "/team", element: <OurTeam /> },
       { path: "/contact", element: <ContactUs /> },
       { path: "/services", element: <Services /> },

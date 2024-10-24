@@ -19,6 +19,7 @@ function CustomerReviews() {
     setValue,
   } = useForm();
   const { user } = useAuth();
+  console.log(user);
 
   const handleStarClick = (value) => {
     setRating(value);
@@ -29,16 +30,15 @@ function CustomerReviews() {
     try {
       const currentDate = new Date().toISOString();
       const reviewData = {
+        profilepic: user?.profilePic,
         name: user?.name,
+        username: user?.username,
         email: user?.email,
         comment: data.description,
         service: data.service,
         rating: data.rating,
         date: currentDate,
       };
-
-      console.log(reviewData);
-
       await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/addReview`,
         reviewData
