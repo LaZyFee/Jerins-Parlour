@@ -41,7 +41,7 @@ function BookingList() {
   }
 
   return (
-    <>
+    <div className="min-h-screen">
       <h1 className="text-3xl font-bold text-center my-5">Booking List</h1>
       {bookingList && bookingList.length > 0 ? (
         <div className="overflow-x-auto">
@@ -91,7 +91,7 @@ function BookingList() {
           </p>
         </div>
       )}
-    </>
+    </div>
   );
 }
 

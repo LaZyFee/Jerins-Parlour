@@ -6,7 +6,7 @@ function HeroSection() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 lg:p-12 shadow-xl lg:flex lg:flex-row-reverse ">
       <img src={HeroImage1} className="lg:w-1/2" alt="Hero" />
-      <div className="w-full flex flex-col justify-center items-start">
+      <div className="w-full flex flex-col justify-center items-start p-6">
         <h1 className="text-5xl font-bold">
           Beauty Salon <br />
           For Every Women

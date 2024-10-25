@@ -30,7 +30,7 @@ function TitleUpdater() {
     document.title = title;
   }, [location]);
 
-  return null; // This component doesn't render anything
+  return null;
 }
 
 export default TitleUpdater;

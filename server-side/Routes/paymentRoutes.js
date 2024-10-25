@@ -3,6 +3,7 @@ import { createPayPalPayment, executePayPalPayment } from '../Controller/PaypalP
 import { createStripeSession } from '../Controller/StripePaymentController.js';
 const router = express.Router();
 
+
 // Initiate PayPal payment
 router.post('/paypal', createPayPalPayment);
 

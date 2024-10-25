@@ -1,9 +1,8 @@
 import { useLocation } from "react-router-dom";
 import { BsFillCreditCard2FrontFill, BsPaypal } from "react-icons/bs";
-import PayPalButton from "../../../Components/PaypalButton";
 import StripeButton from "../../../Components/StripeButton";
-import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { useState } from "react";
+import Loader from "../../../Components/Loader";
 
 function Checkout() {
   const location = useLocation();
@@ -86,21 +85,10 @@ function Checkout() {
               customerPhone={phone}
             />
           )}
-
           {selectedPaymentMethod === "paypal" && (
-            <PayPalScriptProvider
-              options={{
-                "client-id": import.meta.env.VITE_PAYPAL_CLIENT_ID,
-                components: "buttons",
-                currency: "USD",
-              }}
-            >
-              <PayPalButton
-                totalPrice={totalPrice}
-                orderItems={orderItem}
-                userId={userId}
-              />
-            </PayPalScriptProvider>
+            <p className="text-red-500 text-center text-xl font-bold">
+              Due to some error in code it&apos;s unavailable Now. <Loader />
+            </p>
           )}
         </div>
       </div>
@@ -109,3 +97,28 @@ function Checkout() {
 }
 
 export default Checkout;
+
+/*
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import PayPalButton from "../../../Components/PaypalButton";
+
+
+{selectedPaymentMethod === "paypal" && (
+            <PayPalScriptProvider
+              options={{
+                "client-id": import.meta.env.VITE_PAYPAL_CLIENT_ID,
+                components: "buttons",
+              }}
+            >
+              <PayPalButton
+                totalPrice={totalPrice}
+                orderItem={orderItem}
+                userId={userId}
+                bookingId={bookingId}
+                customerName={name}
+                customerEmail={email}
+                customerPhone={phone}
+              />
+            </PayPalScriptProvider>
+          )}
+*/

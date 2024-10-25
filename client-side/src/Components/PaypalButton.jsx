@@ -4,8 +4,10 @@
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { toast } from "react-hot-toast";
 import axios from "axios";
-
+import { useEffect, useState } from "react";
 const PayPalButton = ({ totalPrice, orderItems, userId }) => {
+  const [loading, setLoading] = useState(true);
+
   const handleApprove = async (data, actions) => {
     try {
       const { data: paymentData } = await axios.post(
@@ -23,6 +25,21 @@ const PayPalButton = ({ totalPrice, orderItems, userId }) => {
     }
   };
 
+  useEffect(() => {
+    const loadPayPalScript = () => {
+      const script = document.createElement("script");
+      script.src = `https://www.paypal.com/sdk/js?client-id=${
+        import.meta.env.VITE_PAYPAL_CLIENT_ID
+      }`;
+      script.onload = () => setLoading(false);
+      document.body.appendChild(script);
+    };
+
+    loadPayPalScript();
+  }, []);
+
+  if (loading) return <div>Loading...</div>; // Show a loading indicator
+
   return (
     <PayPalButtons
       createOrder={handleApprove}
@@ -39,5 +56,4 @@ const PayPalButton = ({ totalPrice, orderItems, userId }) => {
     />
   );
 };
-
 export default PayPalButton;
