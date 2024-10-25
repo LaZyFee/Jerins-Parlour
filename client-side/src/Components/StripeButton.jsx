@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 
+import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 import { toast } from "react-hot-toast";
@@ -16,7 +17,10 @@ const StripeButton = ({
   customerEmail,
   customerPhone,
 }) => {
+  const [loading, setLoading] = useState(false);
+
   const handleStripePayment = async () => {
+    setLoading(true);
     try {
       const { data: sessionData } = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/payment/stripe`,
@@ -27,7 +31,7 @@ const StripeButton = ({
           customerName,
           customerEmail,
           customerPhone,
-          bookingId, // Send bookingId in the request body
+          bookingId,
         }
       );
 
@@ -43,6 +47,8 @@ const StripeButton = ({
     } catch (error) {
       toast.error("Failed to initiate Stripe payment");
       console.error("Error creating Stripe session:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,8 +56,9 @@ const StripeButton = ({
     <button
       onClick={handleStripePayment}
       className="btn bg-[#F63E7B] text-white my-5"
+      disabled={loading}
     >
-      Pay with Stripe
+      {loading ? "Processing..." : "Pay with Stripe"}
     </button>
   );
 };
