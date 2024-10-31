@@ -1,24 +1,31 @@
 import express from "express";
-import { registerUser, loginUser, checkAdmin, logoutUser, makeAdmin } from "../Controller/AuthController.js";
+import {
+    registerUser,
+    loginUser,
+    logoutUser,
+    googleAuth,
+    checkAdmin,
+    makeAdmin,
+} from "../Controller/AuthController.js";
+import passport from "passport";
 import { uploadProfilePic } from "../Utils/multer.js";
 import { verifyToken } from "../Middlewares/verifyToken.js";
 import { verifyAdmin } from "../Middlewares/verifyAdmin.js";
 
 const router = express.Router();
 
-// Register route for uploading profile pictures
+// Standard registration with profile picture upload
 router.post("/register", uploadProfilePic.single("profilePic"), registerUser);
-
-// Login route
 router.post("/login", loginUser);
-
-// Check if user is admin
-router.get("/check-admin", verifyToken, checkAdmin);
-
-// Logout route
 router.post("/logout", logoutUser);
-
-// Make user admin
+router.get("/check-admin", verifyToken, checkAdmin);
 router.put("/make-admin", verifyToken, verifyAdmin, makeAdmin);
+
+// Google OAuth
+router.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+router.get("/auth/google/callback",
+    passport.authenticate("google", { failureRedirect: "http://localhost:5173/login" }),
+    googleAuth // Final callback
+);
 
 export default router;

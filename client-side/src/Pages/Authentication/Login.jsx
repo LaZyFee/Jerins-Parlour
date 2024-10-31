@@ -17,13 +17,11 @@ function Login() {
 
   const handleLogin = async (data) => {
     const { email, password } = data;
-
     try {
       await login(email, password);
       toast.success("Login successfully");
       navigate("/");
     } catch (error) {
-      // Check for specific error status
       if (error.response && error.response.status === 401) {
         setLoginError("Invalid email or password, please try again");
         toast.error("Invalid email or password, please try again");
@@ -31,6 +29,10 @@ function Login() {
         setLoginError(error.message || "Error logging in");
       }
     }
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = `${import.meta.env.VITE_BACKEND_URL}/auth/google`;
   };
 
   return (
@@ -74,7 +76,6 @@ function Login() {
             </div>
 
             <label className="label">
-              {" "}
               <Link className="label-text" to="/forgot-password">
                 Forget Password?
               </Link>
@@ -100,7 +101,12 @@ function Login() {
             </Link>
           </p>
           <div className="divider">OR</div>
-          <div className="btn btn-outline btn-info rounded-xl text-xl flex items-center justify-center">
+
+          {/* Google Login Button */}
+          <div
+            className="btn btn-outline btn-info rounded-xl text-xl flex items-center justify-center"
+            onClick={handleGoogleLogin}
+          >
             <img
               src="public/assets/icons/Group 573.png"
               alt="google icon"

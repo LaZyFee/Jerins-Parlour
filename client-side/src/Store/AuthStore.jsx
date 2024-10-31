@@ -12,10 +12,18 @@ export const useAuth = create((set) => ({
   isAdmin: false,
   isAdminLoading: true,
 
-  // Method to set admin status
   setIsAdmin: (isAdmin) => set({ isAdmin }),
 
-  // Signup function
+  setToken: (token) => {
+    localStorage.setItem("token", token);
+    set({ isAuthenticated: !!token });
+  },
+
+  setUser: (user) => {
+    localStorage.setItem("user", JSON.stringify(user));
+    set({ user, isAuthenticated: true });
+  },
+
   signup: async (formData) => {
     set({ isLoading: true, error: null });
     try {
@@ -30,7 +38,7 @@ export const useAuth = create((set) => ({
       );
       const { user, token } = response.data;
 
-      localStorage.setItem("user", JSON.stringify(user)); // Ensure username exists in this object
+      localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", token);
 
       const isAdmin = await CheckAdmin();
@@ -49,16 +57,12 @@ export const useAuth = create((set) => ({
     }
   },
 
-  // Login function
   login: async (email, password) => {
     set({ isLoading: true, error: null });
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/login`,
-        {
-          email,
-          password,
-        }
+        { email, password }
       );
       const { user, token } = response.data;
 
@@ -81,7 +85,6 @@ export const useAuth = create((set) => ({
     }
   },
 
-  // Logout function
   logout: async () => {
     set({ isLoading: true, error: null });
     try {
@@ -91,7 +94,7 @@ export const useAuth = create((set) => ({
       set({
         user: null,
         isAuthenticated: false,
-        isAdmin: false, // Reset to false on logout
+        isAdmin: false,
         isAdminLoading: false,
         isLoading: false,
       });
@@ -101,7 +104,6 @@ export const useAuth = create((set) => ({
     }
   },
 
-  // Sync across tabs
   syncUserAcrossTabs: () => {
     window.addEventListener("storage", async (event) => {
       if (event.key === "user") {
@@ -121,7 +123,6 @@ export const useAuth = create((set) => ({
     });
   },
 
-  // Check admin status on app load
   checkAdminOnLoad: async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
@@ -138,6 +139,5 @@ export const useAuth = create((set) => ({
   },
 }));
 
-// Initialize the sync across tabs functionality
 useAuth.getState().syncUserAcrossTabs();
 useAuth.getState().checkAdminOnLoad();

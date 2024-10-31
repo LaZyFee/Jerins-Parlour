@@ -1,14 +1,22 @@
+//external imports
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { connectDB } from "./DB/connectDB.js";
+import session from "express-session";
+import passport from "passport";
+import path from "path";
+import { fileURLToPath } from "url";
+
+
+
+//internal imports
+import { connectDB } from "./Config/connectDB.js";
 import authRoutes from "./Routes/authRoutes.js";
 import serviceRoutes from "./Routes/serviceRoutes.js";
 import bookingRoutes from "./Routes/bookingRoutes.js";
 import paymentRoutes from "./Routes/paymentRoutes.js";
 import orderRoutes from "./Routes/orderRoutes.js";
-import path from "path";
-import { fileURLToPath } from "url";
+import "./Config/passportJs.js";
 
 // Manually create __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -23,6 +31,15 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+    })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
 const PORT = process.env.PORT || 5000;
 
