@@ -21,6 +21,7 @@ import Profile from "../Pages/Outlets/Profile";
 import UpdateService from "../Pages/Admin/UpdateService";
 import PrivateRoutes from "./PrivateRoutes";
 import AdminRoutes from "./AdminRoutes";
+import LoginSuccess from "../Pages/Authentication/LoginSucess";
 
 export const router = createBrowserRouter([
   {
@@ -94,5 +95,6 @@ export const router = createBrowserRouter([
   },
   { path: "/login", element: <Login /> },
   { path: "/signup", element: <Signup /> },
+  { path: "/login/success", element: <LoginSuccess /> },
   { path: "*", element: <NotFound /> },
 ]);

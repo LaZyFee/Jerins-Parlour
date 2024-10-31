@@ -133,3 +133,43 @@ export const makeAdmin = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+export const googleAuth = async (req, res) => {
+    try {
+        const { googleId, email, name, profilePic } = req.user;
+
+        // Check for an existing user or create a new one
+        let user = await UserModel.findOne({ googleId });
+
+        if (!user) {
+            user = await UserModel.create({
+                googleId,
+                email,
+                name,
+                username: name, // Default username
+                profilePic,
+            });
+        }
+
+        // Generate JWT token
+        const token = generateToken(user);
+
+        // Redirect with token and serialized user object as query parameters
+        const userQuery = JSON.stringify({
+            _id: user._id,
+            name: user.name,
+            username: user.username,
+            email: user.email,
+            profilePic: user.profilePic,
+            isAdmin: user.isAdmin,
+        });
+
+        res.redirect(
+            `${process.env.FRONTEND_URL}/login/success?token=${token}&user=${encodeURIComponent(userQuery)}`
+        );
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
