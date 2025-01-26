@@ -52,4 +52,9 @@ app.use("/api", bookingRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use("/api", orderRoutes);
 
+
+app.get("/", (req, res) => {
+    res.send("Hello from jerins parlour server");
+});
+
 export default app;
