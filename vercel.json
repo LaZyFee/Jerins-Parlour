@@ -6,7 +6,6 @@
       "use": "@vercel/node"
     }
   ],
-
   "routes": [
     {
       "src": "/uploads/(.*)",
@@ -16,5 +15,9 @@
       "src": "/(.*)",
       "dest": "/index.js"
     }
-  ]
+  ],
+  "static": {
+    "src": "uploads",
+    "dest": "/uploads"
+  }
 }

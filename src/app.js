@@ -46,11 +46,11 @@ app.use(passport.session());
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 
-app.use("/api", authRoutes);
-app.use("/api", serviceRoutes);
-app.use("/api", bookingRoutes);
-app.use('/api/payment', paymentRoutes);
-app.use("/api", orderRoutes);
+app.use("/", authRoutes);
+app.use("/", serviceRoutes);
+app.use("/", bookingRoutes);
+app.use('/payment', paymentRoutes);
+app.use("/", orderRoutes);
 
 
 app.get("/", (req, res) => {
