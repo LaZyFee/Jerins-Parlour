@@ -5,18 +5,24 @@ import fs from 'fs'; // Import the fs module
 export const addService = async (req, res) => {
     try {
         const { name, price, description } = req.body;
+
         if (!name || !price || !description) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
-        // Store image path if the image is uploaded
-        const imagePath = req.file ? req.file.path.replace(/\\/g, "/") : "";
+        // Upload service image to Cloudinary
+        let serviceImageUrl = "";
+        if (req.file) {
+            const cloudinaryResult = await uploadToCloudinary(req.file.path, "service-pics");
+            serviceImageUrl = cloudinaryResult.secure_url; // Get the image URL
+        }
 
+        // Save the service details to the database
         const service = await ServiceModel.create({
             name,
             price,
             description,
-            image: imagePath, // Save image path in the database
+            image: serviceImageUrl, // Save Cloudinary URL in DB
         });
 
         res.status(200).json(service);
@@ -24,6 +30,7 @@ export const addService = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 // Update service with image
 

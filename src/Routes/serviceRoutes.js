@@ -5,10 +5,10 @@ import { uploadServicePic } from "../Config/multer.js";
 const router = express.Router();
 
 // Add service with image upload
-router.post("/addService", uploadServicePic.single("image"), addService);
+router.post("/addService", uploadServicePic, addService);
 
 // Update service with image upload
-router.put("/updateService/:id", uploadServicePic.single("image"), updateService);
+router.put("/updateService/:id", uploadServicePic, updateService);
 
 // Get all services
 router.get("/getAllServices", getAllServices);

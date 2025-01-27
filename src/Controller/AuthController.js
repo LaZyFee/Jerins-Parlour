@@ -1,6 +1,7 @@
 import { UserModel } from "../Models/AuthModel.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../Utils/generateToken.js";
+import { uploadToCloudinary } from "../Config/multer.js";
 
 export const registerUser = async (req, res) => {
     try {
@@ -19,16 +20,21 @@ export const registerUser = async (req, res) => {
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Upload profile picture
-        const profilePicPath = req.file ? req.file.path.replace(/\\/g, "/") : "";
-        // Create the user with hashed password
+        // Upload profile picture to Cloudinary
+        let profilePicUrl = "";
+        if (req.file) {
+            const cloudinaryResult = await uploadToCloudinary(req.file.path, "profile-pics");
+            profilePicUrl = cloudinaryResult.secure_url; // Get the image URL
+        }
+
+        // Create the user
         const user = await UserModel.create({
             name,
             username,
             email,
             phone,
             password: hashedPassword,
-            profilePic: profilePicPath,
+            profilePic: profilePicUrl, // Save Cloudinary URL in DB
         });
 
         // Generate JWT token
@@ -44,7 +50,7 @@ export const registerUser = async (req, res) => {
                 phone: user.phone,
                 profilePic: user.profilePic,
             },
-            token,  // Include token in response
+            token,
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -171,5 +177,3 @@ export const googleAuth = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-
-

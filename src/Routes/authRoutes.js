@@ -15,7 +15,7 @@ import { verifyAdmin } from "../Middlewares/verifyAdmin.js";
 const router = express.Router();
 
 // Standard registration with profile picture upload
-router.post("/register", uploadProfilePic.single("profilePic"), registerUser);
+router.post("/register", uploadProfilePic, registerUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
 router.get("/check-admin", verifyToken, checkAdmin);
