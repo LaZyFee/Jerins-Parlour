@@ -8,7 +8,6 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-console.log("Cloudinary Config (After Setup):", cloudinary.config());
 
 export const uploadToCloudinary = async (fileBuffer, folder) => {
     try {

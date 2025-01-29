@@ -154,6 +154,10 @@ export const googleAuth = async (req, res) => {
                 username: name,
                 profilePic,
             });
+        } else if (!user.googleId) {
+            // If user exists but doesn't have a googleId, update it
+            user.googleId = googleId;
+            await user.save();
         }
 
         const token = generateToken(user);

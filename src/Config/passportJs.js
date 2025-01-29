@@ -19,16 +19,26 @@ passport.use(
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
-                let user = await UserModel.findOne({ googleId: profile.id });
+                let user = await UserModel.findOne({ email: profile.emails[0].value });
+
+                if (!user) {
+                    user = await UserModel.findOne({ googleId: profile.id });
+                }
+
                 if (!user) {
                     user = await UserModel.create({
                         googleId: profile.id,
                         email: profile.emails[0].value,
                         name: profile.displayName,
-                        profilePic: profile.photos[0].value,
                         username: profile.displayName,
+                        profilePic: profile.photos[0].value,
                     });
+                } else if (!user.googleId) {
+                    // If the user exists but doesn't have a googleId, update it
+                    user.googleId = profile.id;
+                    await user.save();
                 }
+
                 done(null, user);
             } catch (error) {
                 done(error, null);
