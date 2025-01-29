@@ -12,7 +12,7 @@ export const addService = async (req, res) => {
 
         let imageUrl = "";
         if (req.file) {
-            imageUrl = await uploadToCloudinary(req.file.path, "services");
+            imageUrl = await uploadToCloudinary(req.file.buffer, "services");
         }
 
         const service = await ServiceModel.create({
@@ -28,7 +28,7 @@ export const addService = async (req, res) => {
     }
 };
 
-// Update service with new image
+// Update service with new image or remove old image
 export const updateService = async (req, res) => {
     try {
         const existingService = await ServiceModel.findById(req.params.id);
@@ -36,16 +36,26 @@ export const updateService = async (req, res) => {
             return res.status(404).json({ message: "Service not found" });
         }
 
-        const updateFields = { ...req.body };
+        let imageUrl = existingService.image;
 
-        // If new image is uploaded, update Cloudinary URL
+        // If a new image is uploaded, upload to Cloudinary
         if (req.file) {
-            updateFields.image = req.file.path;
+            imageUrl = await uploadToCloudinary(req.file.buffer, "services");
+        }
+
+        // If removeImage flag is set, remove the current image
+        if (req.body.removeImage === "true") {
+            imageUrl = "";
         }
 
         const updatedService = await ServiceModel.findByIdAndUpdate(
             req.params.id,
-            updateFields,
+            {
+                name: req.body.name,
+                price: req.body.price,
+                description: req.body.description,
+                image: imageUrl,
+            },
             { new: true }
         );
 
