@@ -6,6 +6,7 @@ import { uploadToCloudinary } from "../Config/multer.js";
 export const registerUser = async (req, res) => {
     try {
         const { name, username, email, phone, password } = req.body;
+        console.log("Received Data:", req.body);
 
         if (!name || !email || !password || !phone) {
             return res.status(400).json({ message: "All fields are required" });
@@ -17,45 +18,40 @@ export const registerUser = async (req, res) => {
             return res.status(400).json({ message: "User already exists" });
         }
 
-        // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Upload profile picture to Cloudinary
         let profilePicUrl = "";
         if (req.file) {
+            console.log("Uploading image to Cloudinary...");
             const cloudinaryResult = await uploadToCloudinary(req.file.path, "profile-pics");
-            profilePicUrl = cloudinaryResult.secure_url; // Get the image URL
+            profilePicUrl = cloudinaryResult.secure_url;
+            console.log("Cloudinary Upload Successful:", profilePicUrl);
         }
 
-        // Create the user
         const user = await UserModel.create({
             name,
             username,
             email,
             phone,
             password: hashedPassword,
-            profilePic: profilePicUrl, // Save Cloudinary URL in DB
+            profilePic: profilePicUrl,
         });
 
-        // Generate JWT token
         const token = generateToken(user);
+        console.log("User Created Successfully:", user);
 
         res.status(201).json({
             message: "User created successfully",
-            user: {
-                _id: user._id,
-                name: user.name,
-                username: user.username,
-                email: user.email,
-                phone: user.phone,
-                profilePic: user.profilePic,
-            },
+            user,
             token,
         });
+
     } catch (error) {
+        console.error("Registration Error:", error);
         res.status(500).json({ message: error.message });
     }
 };
+
 
 
 

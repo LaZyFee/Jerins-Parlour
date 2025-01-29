@@ -42,9 +42,10 @@ export const uploadMultiple = upload.array("images", 10); // For multiple image 
 export const uploadToCloudinary = async (filePath, folder) => {
     try {
         const result = await cloudinary.uploader.upload(filePath, { folder });
-        await unlink(filePath); // Delete the local file after uploading to Cloudinary
-        return result; // Return the uploaded file details
+        await unlink(filePath);
+        return result;
     } catch (error) {
+        console.error("Cloudinary Upload Error:", error);
         throw new Error("Failed to upload image to Cloudinary");
     }
 };
