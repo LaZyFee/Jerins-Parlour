@@ -18,10 +18,9 @@ export const registerUser = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Upload to Cloudinary if an image is provided
         let profilePicUrl = "";
         if (req.file) {
-            profilePicUrl = await uploadToCloudinary(req.file.path, "profile_pics");
+            profilePicUrl = await uploadToCloudinary(req.file.buffer, "profile_pics");
         }
 
         const user = await UserModel.create({
