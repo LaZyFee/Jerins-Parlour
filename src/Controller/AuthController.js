@@ -1,32 +1,24 @@
 import { UserModel } from "../Models/AuthModel.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../Utils/generateToken.js";
-import { uploadToCloudinary } from "../Config/multer.js";
 
 export const registerUser = async (req, res) => {
     try {
         const { name, username, email, phone, password } = req.body;
-        console.log("Received Data:", req.body);
 
         if (!name || !email || !password || !phone) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
         const existingUser = await UserModel.findOne({ email });
-
         if (existingUser) {
             return res.status(400).json({ message: "User already exists" });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        let profilePicUrl = "";
-        if (req.file) {
-            console.log("Uploading image to Cloudinary...");
-            const cloudinaryResult = await uploadToCloudinary(req.file.path, "profile-pics");
-            profilePicUrl = cloudinaryResult.secure_url;
-            console.log("Cloudinary Upload Successful:", profilePicUrl);
-        }
+        // Get Cloudinary URL from the uploaded image
+        let profilePicUrl = req.file ? req.file.path : "";
 
         const user = await UserModel.create({
             name,
@@ -34,16 +26,15 @@ export const registerUser = async (req, res) => {
             email,
             phone,
             password: hashedPassword,
-            profilePic: profilePicUrl,
+            profilePic: profilePicUrl
         });
 
         const token = generateToken(user);
-        console.log("User Created Successfully:", user);
 
         res.status(201).json({
             message: "User created successfully",
             user,
-            token,
+            token
         });
 
     } catch (error) {
@@ -51,8 +42,6 @@ export const registerUser = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-
-
 
 
 export const loginUser = async (req, res) => {

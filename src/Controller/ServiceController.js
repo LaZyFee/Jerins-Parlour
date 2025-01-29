@@ -1,7 +1,6 @@
 import { ServiceModel } from "../Models/ServiceModel.js";
-import fs from 'fs'; // Import the fs module
 
-// Add service with image
+// Add new service with image
 export const addService = async (req, res) => {
     try {
         const { name, price, description } = req.body;
@@ -10,86 +9,37 @@ export const addService = async (req, res) => {
             return res.status(400).json({ message: "All fields are required" });
         }
 
-        // Upload service image to Cloudinary
-        let serviceImageUrl = "";
-        if (req.file) {
-            const cloudinaryResult = await uploadToCloudinary(req.file.path, "service-pics");
-            serviceImageUrl = cloudinaryResult.secure_url; // Get the image URL
-        }
+        // Get Cloudinary image URL
+        let serviceImageUrl = req.file ? req.file.path : "";
 
-        // Save the service details to the database
         const service = await ServiceModel.create({
             name,
             price,
             description,
-            image: serviceImageUrl, // Save Cloudinary URL in DB
+            image: serviceImageUrl
         });
 
-        res.status(200).json(service);
+        res.status(201).json(service);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
-
-// Update service with image
-
-
+// Update service with new image
 export const updateService = async (req, res) => {
     try {
-        // Find the existing service
         const existingService = await ServiceModel.findById(req.params.id);
         if (!existingService) {
             return res.status(404).json({ message: "Service not found" });
         }
 
-        // Create an object to hold the update fields
-        const updateFields = {};
+        const updateFields = { ...req.body };
 
-        // Check if each field is provided and add it to the updateFields object
-        if (req.body.name) {
-            updateFields.name = req.body.name;
-        }
-        if (req.body.price) {
-            updateFields.price = req.body.price;
-        }
-        if (req.body.description) {
-            updateFields.description = req.body.description;
+        // If new image is uploaded, update Cloudinary URL
+        if (req.file) {
+            updateFields.image = req.file.path;
         }
 
-        // Handle image removal if the removeImage flag is set
-        if (req.body.removeImage === "true") {
-            // Check if the service has an existing image
-            const oldImagePath = existingService.image;
-            if (oldImagePath) {
-                // Delete the old image file
-                fs.unlink(oldImagePath, (err) => {
-                    if (err) {
-                        console.error("Failed to delete old image:", err);
-                    }
-                });
-                // Set the image field to null
-                updateFields.image = null;
-            }
-        }
-
-        // Store new image path if a new image is uploaded and removeImage is false
-        if (req.file && req.body.removeImage !== "true") {
-            // Delete the old image file if it exists and if not already removed
-            const oldImagePath = existingService.image;
-            if (oldImagePath) {
-                fs.unlink(oldImagePath, (err) => {
-                    if (err) {
-                        console.error("Failed to delete old image:", err);
-                    }
-                });
-            }
-
-            // Add the new image path to the update fields
-            updateFields.image = req.file.path.replace(/\\/g, "/");
-        }
-
-        // Update the service with the provided fields
         const updatedService = await ServiceModel.findByIdAndUpdate(
             req.params.id,
             updateFields,
@@ -102,10 +52,7 @@ export const updateService = async (req, res) => {
     }
 };
 
-
-
-
-
+// Get all services
 export const getAllServices = async (req, res) => {
     try {
         const services = await ServiceModel.find();
@@ -115,6 +62,7 @@ export const getAllServices = async (req, res) => {
     }
 };
 
+// Delete a service
 export const removeService = async (req, res) => {
     try {
         const service = await ServiceModel.findByIdAndDelete(req.params.id);
