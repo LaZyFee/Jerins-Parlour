@@ -8,6 +8,7 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+console.log("Cloudinary Config (After Setup):", cloudinary.config());
 
 export const uploadToCloudinary = async (fileBuffer, folder) => {
     try {
@@ -16,15 +17,18 @@ export const uploadToCloudinary = async (fileBuffer, folder) => {
                 { folder },
                 (error, result) => {
                     if (error) {
+                        console.error("Cloudinary Upload Error:", error);
                         reject(error);
                     } else {
                         resolve(result.secure_url);
                     }
                 }
             );
-            uploadStream.end(fileBuffer);
+
+            uploadStream.end(fileBuffer); // Upload from memory
         });
     } catch (error) {
+        console.error("Cloudinary Upload Error:", error);
         throw new Error("Failed to upload image to Cloudinary");
     }
 };

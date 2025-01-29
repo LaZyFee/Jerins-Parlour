@@ -20,7 +20,7 @@ export const registerUser = async (req, res) => {
 
         let profilePicUrl = "";
         if (req.file) {
-            profilePicUrl = await uploadToCloudinary(req.file.buffer, "profile_pics");
+            profilePicUrl = await uploadToCloudinary(req.file.buffer, "profile_pics"); // Use buffer
         }
 
         const user = await UserModel.create({
