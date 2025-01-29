@@ -1,12 +1,13 @@
 import multer from "multer";
 import path from "path";
-import cloudinary from "./cloudinary.js";
-import { unlink } from "fs/promises";
+import fs from "fs-extra";
 
-// Multer setup for temporary local storage
+// Multer configuration (temporary local storage)
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, "uploads/"); // Temporary folder for storing files
+        const uploadDir = "uploads/";
+        fs.ensureDirSync(uploadDir); // Ensure the folder exists
+        cb(null, uploadDir);
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -14,7 +15,7 @@ const storage = multer.diskStorage({
     }
 });
 
-// File filter for image files
+// File filter for images
 const fileFilter = (req, file, cb) => {
     const filetypes = /jpeg|jpg|png/;
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
@@ -27,25 +28,12 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-// Multer upload middleware
-const upload = multer({
+// Multer middleware
+export const upload = multer({
     storage,
-    limits: { fileSize: 1024 * 1024 * 5 }, // Limit file size to 5MB
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB file size limit
     fileFilter
 });
 
-export const uploadProfilePic = upload.single("profilePic");
-export const uploadServicePic = upload.single("image");
-export const uploadMultiple = upload.array("images", 10); // For multiple image uploads
-
-// Function to upload a file to Cloudinary
-export const uploadToCloudinary = async (filePath, folder) => {
-    try {
-        const result = await cloudinary.uploader.upload(filePath, { folder });
-        await unlink(filePath);
-        return result;
-    } catch (error) {
-        console.error("Cloudinary Upload Error:", error);
-        throw new Error("Failed to upload image to Cloudinary");
-    }
-};
+export const uploadSingle = upload.single("image");
+export const uploadMultiple = upload.array("images", 10);

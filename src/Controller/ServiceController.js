@@ -1,6 +1,7 @@
 import { ServiceModel } from "../Models/ServiceModel.js";
+import { uploadToCloudinary } from "../Config/cloudinary.js";
 
-// Add new service with image
+// Add a new service
 export const addService = async (req, res) => {
     try {
         const { name, price, description } = req.body;
@@ -9,14 +10,16 @@ export const addService = async (req, res) => {
             return res.status(400).json({ message: "All fields are required" });
         }
 
-        // Get Cloudinary image URL
-        let serviceImageUrl = req.file ? req.file.path : "";
+        let imageUrl = "";
+        if (req.file) {
+            imageUrl = await uploadToCloudinary(req.file.path, "services");
+        }
 
         const service = await ServiceModel.create({
             name,
             price,
             description,
-            image: serviceImageUrl
+            image: imageUrl
         });
 
         res.status(201).json(service);

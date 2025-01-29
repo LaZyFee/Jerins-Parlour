@@ -1,7 +1,6 @@
-import multer from "multer";
 import { v2 as cloudinary } from "cloudinary";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
 import dotenv from "dotenv";
+import fs from "fs-extra";
 
 dotenv.config();
 
@@ -12,22 +11,14 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Set up Cloudinary Storage
-const storage = new CloudinaryStorage({
-    cloudinary,
-    params: {
-        folder: "uploads", // Folder name in Cloudinary
-        allowed_formats: ["jpeg", "jpg", "png"],
-        transformation: [{ width: 500, height: 500, crop: "limit" }]
+// Function to upload image to Cloudinary
+export const uploadToCloudinary = async (filePath, folder) => {
+    try {
+        const result = await cloudinary.uploader.upload(filePath, { folder });
+        await fs.unlink(filePath); // Delete local file after upload
+        return result.secure_url;
+    } catch (error) {
+        console.error("Cloudinary Upload Error:", error);
+        throw new Error("Failed to upload image to Cloudinary");
     }
-});
-
-// Multer upload middleware
-const upload = multer({ storage });
-
-// Export middleware for different routes
-export const uploadProfilePic = upload.single("profilePic");
-export const uploadServicePic = upload.single("image");
-export const uploadMultiple = upload.array("images", 10);
-
-export default cloudinary;
+};
